@@ -1,0 +1,11 @@
+.backgroun-hearder {
+    background-image: url("https://agillemed.com.br/blog/wp-content/uploads/2018/12/produtosnaturais.jpg");
+    background-size: 100%;
+}
+
+text:focus {
+    border-bottom: 1px solid orange;
+    -webkit-box-shadow: 0 1px 0 0 orange;
+    -moz-box-shadow: 0 1px 0 0 orange;
+    box-shadow: 0 1px 0 0 orange;
+  }
