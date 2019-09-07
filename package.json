@@ -1,10 +1,10 @@
 {
-  "name": "comercio",
+  "name": "controle_comercio",
   "version": "1.0.0",
   "description": "Programa Desktop para controle de venda de produtos de um Comércio",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
-    "start": "electron src/main.js"
+    "start": "electron ."
   },
   "author": "Luan Rodrigues",
   "license": "MIT",
@@ -15,7 +15,5 @@
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.18.1"
   },
-  "devDependencies": {
-    "nodemon": "^1.19.2"
-  }
+  "devDependencies": {}
 }

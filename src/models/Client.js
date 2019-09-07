@@ -2,66 +2,54 @@ const Sequelize = require('sequelize')
 const sequelize = require('./Connection')
 
 
+const Client = sequelize.define('client', {
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    cpf: {
+        type: Sequelize.STRING(11),
+        allowNull: false,
+        unique: true
+    },
+    birth_date: {
+        type: Sequelize.DATEONLY
+    },
+    deletedAt: {
+        type: Sequelize.DATE
+    }
+}, {paranoid: true})
+
+
+const ClientFone = sequelize.define('clientFone', {
+    fone: {
+        type: Sequelize.STRING,
+        allowNull: false
+    }
+})
+
+
 const ClientAddress = sequelize.define('clientAddress', {
     street: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     },
     number: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
     },
     cep: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     },
     complement: {
         type: Sequelize.STRING
     },
 })
 
-ClientAddress.sync()
+// relations: 1..N 
+ClientAddress.belongsTo(Client, {foreignKey: {allowNull: false}, onDelete: 'cascade'})
+ClientFone.belongsTo(Client, {foreignKey: {allowNull: false}, onDelete: 'cascade'})
 
 
-const ClientFone = sequelize.define('clientFone', {
-    fone: {
-        type: Sequelize.STRING
-    }
-})
-
-ClientFone.associate = function(models) {
-    ClientFone.belongsTo(models.Client, {
-        as: 'client',
-        foreignKey: 'clientId'
-    })
-}
-
-ClientFone.sync()
-
-
-const Client = sequelize.define('client', {
-    name: {
-        type: Sequelize.STRING
-    },
-    cpf: {
-        type: Sequelize.STRING(11)
-    },
-    birth_date: {
-        type: Sequelize.DATEONLY
-    },
-    fone: {
-        type: Sequelize.STRING(16)
-    },
-    deletedAt: {
-        type: Sequelize.DATE
-    }
-})
-
-
-Client.associate = function(models) {
-    Client.hasMany(models.ClientFone, {
-        as: 'fones',
-        foreignKey: 'clientFoneId'
-    })
-}
-
-Client.sync()
-
-module.exports = Client
+module.exports = {Client,  ClientFone, ClientAddress}
