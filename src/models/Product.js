@@ -8,13 +8,13 @@ const Product = sequelize.define('product', {
         allowNull: false,
         isAlpha: true
     },
-    bar_code: {
+    barCode: {
         type: Sequelize.STRING,
         unique: true,
         allowNull: false,
         isNumeric: true
     },
-    preco: {
+    price: {
         type: Sequelize.FLOAT,
         allowNull: false
     },

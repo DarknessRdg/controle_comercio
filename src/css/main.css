@@ -1,3 +1,6 @@
+@import '../assets/material-design-icons-3.0.1/iconfont/material-icons.css';
+/* import materialize icons */
+
 body {
     margin-top: 0px;
     height: 100vh;
@@ -25,6 +28,10 @@ body {
 	background-color: #555;
 }
 /* end customize scrollbar */
+
+.hidden {
+  display: none;
+}
 
 .header {
     height: 35%;

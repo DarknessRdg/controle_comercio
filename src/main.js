@@ -11,7 +11,11 @@ let mainWindow;
 // Listen for the app to be ready
 app.on('ready', function() {
     // create new window
-    mainWindow = new BrowserWindow({});
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
 
     // load html file into the window
     mainWindow.loadURL(url.format({

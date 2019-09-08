@@ -15,5 +15,9 @@
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.18.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Experluan/controle_comercio.git"
+  }
 }
