@@ -24,20 +24,21 @@
         <div id="test-swipe-search" class="col s12 mt-3">
             
             <div class="row">
-                <div class="input-field col s12">
+                <div class="input-field col s11">
                     <i class="material-icons prefix">search</i>
-                    <input type="text" id="autocomplete-input" class="autocomplete">
-                    <label for="autocomplete-input">Pesquisar Produtos</label>
+                    <input type="text" id="search-input" class="autocomplete" disabled >
+                    <label for="search-input" id="label-search">Carregando produtos..</label>
                 </div>
             </div>
-
-            <ul id="list-products" class="collapsible" hidden> </ul>
+            
+            <!-- render list of products -->
+            <div id="list-products">
+                
+            </div>
         </div>
         <!-- add new product -->
         <div id="test-swipe-add" class="col s12 mt-3">
             <form>
-                
-
                 <div class="row">
                     <div class="input-field col s7">
                         <i class="material-icons prefix">format_color_text</i>
@@ -46,7 +47,6 @@
                         <span class="helper-text" data-error="Nome inválido!" data-success="Ok!">Digite o nome do produto</span>
                     </div>
                 </div>
-                    
                 <div class="row">
                     <div class="input-field col s7">
                         <i class="material-icons prefix">attach_money</i>
@@ -54,8 +54,7 @@
                         <label for="price">Preço</label>
                         <span class="helper-text" data-error="Preço inválido!" data-success="Ok!">Digite o preço do produto</span>
                     </div>
-                </div>
-                   
+                </div> 
                 <div class="row">
                     <div class="input-field col s7">
                         <i class="material-icons prefix" style="transform: rotate(90deg);">format_align_justify</i>
@@ -76,11 +75,9 @@
                 <div id="combo-div" class="row" hidden>
                     <div id="combo-products-list">
                         
-
                     </div>
                     <a id="combo-add-product" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
                 </div>
-
 
                 <div class="row">
                     <button class="submit">Salvar</button>
@@ -89,7 +86,49 @@
         </div>
     </div>
 
-    
+
+    <div id="edit-product" class="modal">
+        <div class="modal-content">
+            <form>
+                <div class="row">
+                    <div class="input-field col s7">
+                        <i class="material-icons prefix">format_color_text</i>
+                        <input id="name-edit" type="text" class="validate">
+                        <label for="name-edit">Nome</label>
+                        <span class="helper-text" data-error="Nome inválido!" data-success="Ok!">Digite o nome do produto</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s7">
+                        <i class="material-icons prefix">attach_money</i>
+                        <input id="price-edit" type="text" class="validate">
+                        <label for="price-edit">Preço</label>
+                        <span class="helper-text" data-error="Preço inválido!" data-success="Ok!">Digite o preço do produto</span>
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="input-field col s7">
+                        <i class="material-icons prefix" style="transform: rotate(90deg);">format_align_justify</i>
+                        <input id="bar-code-edit" type="text" class="validate">
+                        <label for="bar-code-edit">Código de Barras</label>
+                        <span class="helper-text" data-error="Código inválido!" data-success="Ok!">Digite o código de barras do produto</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <p class="col s12">
+                        <label>
+                            <input id="combo-edit" type="checkbox"  checked/>
+                            <span>É promoção?</span>
+                        </label>
+                    </p>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+        </div>
+    </div>
+
   <script type="text/javascript" src="../js/main.js"></script>
   <script type="text/javascript" src="../js/produtos.js"></script>
 </body>
