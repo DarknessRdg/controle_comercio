@@ -16,33 +16,40 @@
     </div>
 
     <div class="container mt-5">
-        <ul id="tabs-swipe-demo" class="tabs" style="position: sticky !important; top:0px;">
-            <li class="tab col s3"><a href="#test-swipe-search">Pesquisar</a></li>
-            <li class="tab col s3"><a  href="#test-swipe-add">Adicionar</a></li>
+        <ul id="swipe" class="tabs" style="position: sticky !important; top:0px;">
+            <li class="tab col s3"><a href="#swipe-search">Pesquisar</a></li>
+            <li class="tab col s3"><a  href="#swipe-add">Adicionar</a></li>
         </ul>
         <!-- search -->
-        <div id="test-swipe-search" class="col s12 mt-3">
-            
+        <div id="swipe-search" class="col s12 mt-3">
             <div class="row">
-                <div class="input-field col s11">
+                <div class="input-field col s10">
                     <i class="material-icons prefix">search</i>
                     <input type="text" id="search-input" class="autocomplete" disabled >
-                    <label for="search-input" id="label-search">Carregando produtos..</label>
+                    <label for="search-input" id="label-search">Carregando produtos...</label>
+                    <div id="load-products" class="progress">
+                        <div class="indeterminate"></div>
+                    </div>
+                </div>
+                <div class="col s2 mt-4">
+                    <button class="waves-effect waves-light btn-small grey darken-4" type="button" id="refreshProducts">Atualizar
+                        <i class="material-icons right">cached</i>
+                    </button>
                 </div>
             </div>
-            
+
             <!-- render list of products -->
             <div id="list-products">
                 
             </div>
         </div>
         <!-- add new product -->
-        <div id="test-swipe-add" class="col s12 mt-3">
-            <form>
+        <div id="swipe-add" class="col s12 mt-3">
+            <form id="form-create">
                 <div class="row">
                     <div class="input-field col s7">
                         <i class="material-icons prefix">format_color_text</i>
-                        <input id="name" type="text" class="validate">
+                        <input id="name" type="text" class="validate" required>
                         <label for="name">Nome</label>
                         <span class="helper-text" data-error="Nome inválido!" data-success="Ok!">Digite o nome do produto</span>
                     </div>
@@ -50,7 +57,7 @@
                 <div class="row">
                     <div class="input-field col s7">
                         <i class="material-icons prefix">attach_money</i>
-                        <input id="price" type="text" class="validate">
+                        <input id="price" type="text" class="validate" required>
                         <label for="price">Preço</label>
                         <span class="helper-text" data-error="Preço inválido!" data-success="Ok!">Digite o preço do produto</span>
                     </div>
@@ -58,77 +65,59 @@
                 <div class="row">
                     <div class="input-field col s7">
                         <i class="material-icons prefix" style="transform: rotate(90deg);">format_align_justify</i>
-                        <input id="bar-code" type="text" class="validate">
+                        <input id="bar-code" type="text" class="validate" required>
                         <label for="bar-code">Código de Barras</label>
                         <span class="helper-text" data-error="Código inválido!" data-success="Ok!">Digite o código de barras do produto</span>
                     </div>
                 </div>
                 <div class="row">
-                    <p class="col s12">
-                        <label>
-                            <input id="combo" type="checkbox"  checked/>
-                            <span>É promoção?</span>
-                        </label>
-                    </p>
-                </div>
-
-                <div id="combo-div" class="row" hidden>
-                    <div id="combo-products-list">
-                        
-                    </div>
-                    <a id="combo-add-product" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
-                </div>
-
-                <div class="row">
-                    <button class="submit">Salvar</button>
+                    <button class="btn waves-effect waves-lightm ml-5" type="submit" name="action">salvar
+                        <i class="material-icons right">done</i>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
-
-    <div id="edit-product" class="modal">
-        <div class="modal-content">
-            <form>
-                <div class="row">
-                    <div class="input-field col s7">
-                        <i class="material-icons prefix">format_color_text</i>
-                        <input id="name-edit" type="text" class="validate">
-                        <label for="name-edit">Nome</label>
-                        <span class="helper-text" data-error="Nome inválido!" data-success="Ok!">Digite o nome do produto</span>
+    <!-- Modal to edit a product -->
+    <div>
+        <div id="edit-product" class="modal modal-fixed-foote container">
+            <div class="modal-content">
+                <h4 class="center-align mb-5">Editar Produto</h4>
+                <form id="form-update">
+                    <div class="row">
+                        <div class="input-field col s7">
+                            <i class="material-icons prefix">format_color_text</i>
+                            <input id="name-edit" type="text" class="validate">
+                            <label for="name-edit">Nome</label>
+                            <span class="helper-text" data-error="Nome inválido!" data-success="Ok!">Digite o nome do produto</span>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s7">
-                        <i class="material-icons prefix">attach_money</i>
-                        <input id="price-edit" type="text" class="validate">
-                        <label for="price-edit">Preço</label>
-                        <span class="helper-text" data-error="Preço inválido!" data-success="Ok!">Digite o preço do produto</span>
+                    <div class="row">
+                        <div class="input-field col s7">
+                            <i class="material-icons prefix">attach_money</i>
+                            <input id="price-edit" type="text" class="validate">
+                            <label for="price-edit">Preço</label>
+                            <span class="helper-text" data-error="Preço inválido!" data-success="Ok!">Digite o preço do produto</span>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="input-field col s7">
+                            <i class="material-icons prefix" style="transform: rotate(90deg);">format_align_justify</i>
+                            <input id="bar-code-edit" type="text" class="validate">
+                            <label for="bar-code-edit">Código de Barras</label>
+                            <span class="helper-text" data-error="Código inválido!" data-success="Ok!">Digite o código de barras do produto</span>
+                        </div>
                     </div>
-                </div> 
-                <div class="row">
-                    <div class="input-field col s7">
-                        <i class="material-icons prefix" style="transform: rotate(90deg);">format_align_justify</i>
-                        <input id="bar-code-edit" type="text" class="validate">
-                        <label for="bar-code-edit">Código de Barras</label>
-                        <span class="helper-text" data-error="Código inválido!" data-success="Ok!">Digite o código de barras do produto</span>
+                    <div class="row">
+                        <button class="btn waves-effect waves-light ml-5" type="submit" name="action">salvar
+                            <i class="material-icons right">done</i>
+                        </button>
                     </div>
-                </div>
-                <div class="row">
-                    <p class="col s12">
-                        <label>
-                            <input id="combo-edit" type="checkbox"  checked/>
-                            <span>É promoção?</span>
-                        </label>
-                    </p>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+                </form>
+            </div>
         </div>
     </div>
-
   <script type="text/javascript" src="../js/main.js"></script>
   <script type="text/javascript" src="../js/produtos.js"></script>
 </body>

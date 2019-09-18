@@ -3,6 +3,7 @@ const { Product, ComboProducts } = require('../models/Product')
 const MaterializeListeners = require('../js/MaterializeListeners')
 const Sequelize = require('sequelize')
 const NumberFormater = require('../js/utils/formatNumbers')
+const validators = require('../js/utils/validators')
 const Op = Sequelize.Op
 
 let PRODUCTS_ON_DATABASE = []
@@ -12,21 +13,120 @@ MaterializeListeners.tabs()
 MaterializeListeners.modal()
 
 
+document.querySelector('#refreshProducts').addEventListener('click', getAllProducts)
+
+
 document.querySelector('#search-input').addEventListener('keyup', () => {
     let value = document.querySelector('#search-input').value
     const filteredList = searchProduct(value);
     
-    return renderListProducst(filteredList, 'list-products')   
+    renderListProducst(filteredList, 'list-products')
 })
 
 
-document.querySelector('#combo').addEventListener('change', () => {
-    let div = document.querySelector('#combo-div')
-
-    let combosProducts = []
-    renderCombo(combosProducts)
-    div.hidden = !div.hidden
+document.querySelector('#form-create').addEventListener('submit', function(event) {
+    event.preventDefault();
+    createProduct()    
 })
+
+
+document.querySelector('#form-update').addEventListener('submit', event => {
+    event.preventDefault()
+    updateProduct()
+})
+
+
+document.querySelector('#name').addEventListener('focusout', () => {
+    let name = document.querySelector('#name').value
+    let validator = new validators.Product(name, '', '')
+
+    if (!validator.validateName()) {
+        addError('name', validator.error.name)
+    }
+})
+
+
+document.querySelector('#price').addEventListener('focusout', () => {
+    let price = document.querySelector('#price').value
+    let validator = new validators.Product('', price, '')
+
+    if (!validator.validatePrice()) {
+        addError('price', validator.error.price)
+    }
+})
+
+
+document.querySelector('#bar-code').addEventListener('focusout', () => {
+    let barCode = document.querySelector('#bar-code').value
+    let validator = new validators.Product('', '', barCode)
+
+    if (!validator.validateBarCode()) {
+        addError('bar-code', validator.error.barCode)
+    }
+})
+
+document.querySelector('#name-edit').addEventListener('focusout', () => {
+    let name = document.querySelector('#name-edit').value
+    let validator = new validators.Product(name, '', '')
+
+    if (!validator.validateName()) {
+        addError('name-edit', validator.error.name)
+    }
+})
+
+
+document.querySelector('#price-edit').addEventListener('focusout', () => {
+    let price = document.querySelector('#price-edit').value
+    let validator = new validators.Product('', price, '')
+
+    if (!validator.validatePrice()) {
+        addError('price-edit', validator.error.price)
+    }
+})
+
+
+document.querySelector('#bar-code-edit').addEventListener('focusout', () => {
+    let barCode = document.querySelector('#bar-code-edit').value
+    let validator = new validators.Product('', '', barCode)
+
+    if (!validator.validateBarCode()) {
+        addError('bar-code-edit', validator.error.barCode)
+    }
+})
+
+function modalEditListener() {
+    document.querySelectorAll('.modal-edit').forEach(element => {
+        element.addEventListener('click', event => {
+            const liIndex = 3;
+            const id = event.path[liIndex].id
+
+            const product = PRODUCTS_ON_DATABASE.filter(product => {
+                return parseInt(product.dataValues.id) == parseInt(id)
+            })[0]
+
+            openEditModal(product)
+        })
+    })
+
+    document.querySelectorAll('.modal-delete').forEach(element => {
+        element.addEventListener('click', event => {
+            const liIndex = 3;
+            const id = event.path[liIndex].id
+
+            const product = PRODUCTS_ON_DATABASE.filter(product => {
+                return parseInt(product.dataValues.id) == parseInt(id)
+            })[0]
+
+            const destroy = async (product) => {
+                product.destroy()
+                .then(retorno => {
+                    event.path[liIndex].remove()
+                })
+            }
+            destroy(product)
+        })
+    })
+}
 
 
 function searchProduct(parameter) {
@@ -43,77 +143,72 @@ function searchProduct(parameter) {
 
 
 async function getAllProducts() {
+    document.getElementById('search-input').disabled = true
+    document.getElementById('label-search').innerHTML = 'Carregando produtos...'
+    document.getElementById('load-products').classList.remove('hidden')
+    
+    PRODUCTS_ON_DATABASE = []
     const all = await Product.findAll({});
-    PRODUCTS_ON_DATABASE = all;
+    all.forEach(product => {
+        PRODUCTS_ON_DATABASE.push(product)
+    })
+
     document.getElementById('search-input').disabled = false
     document.getElementById('label-search').innerHTML = 'Pesquisar Produtos'
+    document.getElementById('load-products').classList.add('hidden')
+
+    renderListProducst([], 'list-products')
 }
 
 
-document.querySelector('#combo-add-product').addEventListener('click', function() {
-    
-})
-
-function renderCombo(combosProducts) {
-    let div = document.querySelector('#combo-div')
-    
-    combosProducts.forEach(element => {
-         
-    })
-
-}
-
-
-document.querySelector('form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    console.log('her')
-    if (createProduct()) {
-        clearAddFields();
-    } else {
-        console.log('dey nerda')
-    }
-})
-
-
-function createProduct() {
+async function createProduct() {
     const name = document.querySelector('#name').value
     const barCode = document.querySelector('#bar-code').value
-    const price = document.querySelector('#price').value
-    const isCombo = document.querySelector('#combo').checked
+    const price = document.querySelector('#price').value.replace(',', '.')
 
-    Product.create({name, barCode, price, isCombo})
-    .then(product => {
-        if (isCombo) {
-            combosProducts.forEach(comboProduct => {
-                console.log('1')
-                
-                Product.findOne({where: {barCode: comboProduct.barCode}}, {raw: true})
-                    .then(productForCombo => {
-                        ComboProducts.create({
-                            comboId: product.id,
-                            productsId: productForCombo.id
-                        }).then(relation => {
-                            console.log('create ' + relation)
-                        }).catch(error => {
-                            console.log(error)
-                            return false
-                        })
-                    })
-                    .catch(error => {
-                        console.log('not find one ' + error)
-                        return false
-                    })
-            })
+    let validator = new validators.Product(name, price, barCode)
+    if (validator.isValid()) {
+        let p = await Product.findOne({barCode, deletedAt: null})
+        console.log('retornou:')
+        console.log(p)
+
+        try {
+            newProduct = await Product.create({name, barCode, price})
+        }catch (error) {
+            console.log(error)
         }
+        clearAddFields()
+        getAllProducts()
+    }
+    else {
+        Object.keys(validator.error).forEach(field => {
+            let error = validator.error[field]
+            if (field === 'barCode')
+                field = 'bar-code'
 
-    })
-    .catch(error => {
-        console.log('error create')
-        console.log(error)
-        return false
-    }) 
+            addError(field, error)
+        })
+    }
+}
 
-    return true;
+
+async function updateProduct() {
+    const nameInput = document.querySelector('#name-edit')
+    const priceInput = document.querySelector('#price-edit')
+    const barCodeInput = document.querySelector('#bar-code-edit') 
+    
+    let product = searchProduct(barCodeInput.value)[0]
+    await product.update({
+            name: nameInput.value,
+            price: priceInput.values,
+            barCode: barCodeInput.value
+        })
+    
+    nameInput.value = ''
+    priceInput.value = ''
+    barCodeInput.value = ''
+    
+    M.updateTextFields()
 }
 
 
@@ -165,26 +260,31 @@ function renderListProducst(list, nodeId) {
 }
 
 
-function clearAddFields() {
-    document.querySelector('#name').value = ''
-    document.querySelector('#bar-code').value = ''
-    document.querySelector('#price').value = ''
-    document.querySelector('#combo').checked = false
+function addError(field, error) {
+    let input = document.querySelector('#' + field)
+    let label = input.nextElementSibling
+    let span = label.nextElementSibling
+    
+    span.setAttribute('data-error', error)
+    input.classList.add('invalid')
 }
 
-function modalEditListener() {
-    document.querySelectorAll('.modal-edit').forEach(element => {
-        element.addEventListener('click', event => {
-            const liIndex = 3;
-            const id = event.path[liIndex].id
+function clearAddFields() {
+    const clearField = (field) => {
+        field.classList.remove('valid')
+        field.classList.remove('invalid')
+        field.value = ''
+    }
 
-            const product = PRODUCTS_ON_DATABASE.filter(product => {
-                return parseInt(product.dataValues.id) == parseInt(id)
-            })[0]
+    let name = document.querySelector('#name')
+    let barCode = document.querySelector('#bar-code')
+    let price = document.querySelector('#price')
 
-            openEditModal(product)
-        })
-    })
+    clearField(name)
+    clearField(barCode)
+    clearField(price)
+
+    M.updateTextFields()
 }
 
 
@@ -194,7 +294,6 @@ function openEditModal(product) {
     modal.querySelector('#name-edit').value = product.dataValues.name
     modal.querySelector('#price-edit').value = product.dataValues.price
     modal.querySelector('#bar-code-edit').value = product.dataValues.barCode
-    modal.querySelector('#combo-edit').checked = product.dataValues.combo
     
     M.updateTextFields()
     modal.M_Modal.open()

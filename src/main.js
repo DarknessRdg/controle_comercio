@@ -13,8 +13,11 @@ app.on('ready', function() {
     // create new window
     mainWindow = new BrowserWindow({
         webPreferences: {
-            nodeIntegration: true
-        }
+            nodeIntegration: true,
+        },
+        minWidth: 800,
+        minHeight: 500,
+        center: true
     });
 
     // load html file into the window

@@ -1,5 +1,5 @@
 function collapsible() {
-    var elems = document.querySelectorAll('.collapsible');
+    const elems = document.querySelectorAll('.collapsible');
     M.Collapsible.init(elems, 'click');
 }
 
@@ -13,9 +13,15 @@ function modal() {
     M.Modal.init(elems, {});
 }
 
+function chips() {
+    const elems = document.querySelectorAll('.chips');
+    M.Chips.init(elems, options);
+}
+
 
 module.exports = { 
     collapsible,
     tabs,
-    modal
+    modal,
+    chips,
 }
