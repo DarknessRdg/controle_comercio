@@ -168,15 +168,26 @@ async function createProduct() {
 
     let validator = new validators.Product(name, price, barCode)
     if (validator.isValid()) {
-        let p = await Product.findOne({barCode, deletedAt: null})
-        console.log('retornou:')
-        console.log(p)
+        
+        let deleted = await Product.findAll({
+            where: {
+                barCode
+            },
+            paranoid: false
+        })
 
-        try {
-            newProduct = await Product.create({name, barCode, price})
-        }catch (error) {
-            console.log(error)
+        if (deleted.length === 0) {
+            try {
+                let newProduct = await Product.create({name, barCode, price})
+            }catch (error) {
+                console.log(error)
+                return
+            }
+        }else {
+            deleted = deleted[0]
+            deleted.setDataValue('deletedAt', null)
         }
+
         clearAddFields()
         getAllProducts()
     }
