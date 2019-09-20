@@ -1,0 +1,11 @@
+.backgroun-hearder {
+    background-image: url("http://www.jornaldaparaiba.com.br/app/uploads/2019/01/CESTA-B%C3%81SICA-_CAMPINA.jpeg");
+    background-size: 100%;
+}
+
+#toast-container {
+    top: auto !important;
+    right: auto !important;
+    bottom: 10%;
+    left: 40%;  
+  }
