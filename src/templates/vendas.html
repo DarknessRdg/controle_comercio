@@ -4,7 +4,10 @@
     <!-- materialize -->
     <link rel="stylesheet" href="../css/materialize/css/materialize.min.css">
     <script type="text/javascript" src="../css/materialize/js/materialize.min.js"></script>
-  
+    
+    <!-- font awsome -->
+    <link href="../assets/fontawesome-free-5.11.1-web/css/all.css" rel="stylesheet">
+
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/venda.css">
     <meta charset="UTF-8">
@@ -31,16 +34,30 @@
                 </div>
 
                 <div class="mt-3 red">
-                    <button id="addProduct" class="waves-effect waves-light btn blue col s1 ml-4" type="button"><i class="samll material-icons">add_shopping_cart</i></button>
-                </div>
+                    <button id="addProduct" 
+                            class="waves-effect waves-light btn light-blue darken-1 col s1 ml-4 tooltipped" 
+                            type="button" 
+                            data-position="bottom" data-tooltip="Adicionar produto a lista de compras">
+                        <i class="samll material-icons">add_shopping_cart</i> <span class="align-top ">Add</span>
+                    </button>
 
+                    <button id="finalizar" 
+                            class="waves-effect waves-light btn light-blue darken-1 col s1 ml-4 tooltipped" 
+                            type="button" 
+                            data-position="bottom" data-tooltip="Salvar e imprimir lista de compras">
+
+                            <i class="fas fa-percent"></i> <span class="align-top ">Add 2</span>
+                    </button>
+                </div>
+                
+                <div class="col s12 center m-3"><h5>TOTAL: <span id="total">R$ 0,00</span></h5></div>
                 <table class="striped centered ">
                     <thead>
                         <tr>
                             <th>Produto</th>
                             <th>Quantidade</th>
                             <th>Preço unidade</th>
-                            <th>Remover da lista</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
             

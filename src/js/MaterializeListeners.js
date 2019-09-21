@@ -18,10 +18,15 @@ function chips() {
     M.Chips.init(elems, options);
 }
 
+function tooltips () {
+    var elems = document.querySelectorAll('.tooltipped');
+    M.Tooltip.init(elems, {});
+}
 
 module.exports = { 
     collapsible,
     tabs,
     modal,
     chips,
+    tooltips
 }
