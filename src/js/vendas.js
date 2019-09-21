@@ -22,7 +22,7 @@ async function addProductToTable() {
         quantity.value = '1'
     }
     else {
-        M.toast({html: 'Produto nao encontrado', });
+        M.toast({html: 'Produto nao encontrado', classes: 'red darken-4'});
     }
 }
 
