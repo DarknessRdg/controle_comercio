@@ -209,9 +209,10 @@ async function updateProduct() {
     const barCodeInput = document.querySelector('#bar-code-edit') 
     
     let product = searchProduct(barCodeInput.value)[0]
+    console.log(product)
     await product.update({
             name: nameInput.value,
-            price: priceInput.values,
+            price: priceInput.value,
             barCode: barCodeInput.value
         })
     

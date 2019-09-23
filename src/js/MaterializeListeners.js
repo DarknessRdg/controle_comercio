@@ -20,7 +20,7 @@ function chips() {
 
 function tooltips () {
     var elems = document.querySelectorAll('.tooltipped');
-    M.Tooltip.init(elems, {});
+    var instance = M.Tooltip.init(elems, {inDuration: 100}, false, 100);
 }
 
 module.exports = { 

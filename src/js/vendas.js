@@ -3,11 +3,32 @@ const FormatNumber = require('../js/utils/formatNumbers')
 const MaterializeListener = require('../js/MaterializeListeners')
 
 
-document.querySelector('#addProduct').addEventListener('click', addProductToTable)
 MaterializeListener.tooltips()
+MaterializeListener.collapsible()
+
+document.querySelector('#addProduct').addEventListener('click', addProductToTable)
+
+document.querySelector('#barCode').addEventListener('keyup', clickAddOnEnterPressed)
+document.querySelector('#quantity').addEventListener('keyup', clickAddOnEnterPressed)
+
+document.querySelector('#descount-product-percent').addEventListener('blur', () => {
+    document.querySelector('#descount-product-money').value = ''
+})
+document.querySelector('#descount-product-money').addEventListener('blur', () => {
+    document.querySelector('#descount-product-percent').value = ''
+})
+
+document.querySelector('.modal').querySelector('.save').addEventListener('click', descounOnTableRow)
 
 
 let SHOP_CAR = []
+
+
+function clickAddOnEnterPressed(event) {
+    const ENTER = 13
+    if (event.keyCode === ENTER)
+        document.querySelector('#addProduct').click()
+}
 
 
 async function addProductToTable() {
@@ -18,12 +39,12 @@ async function addProductToTable() {
     if (product != null) {
         addToShopCar(product, quantity.value)
         renderTableOfProducts()
-        barCode.value = ''
-        quantity.value = '1'
     }
     else {
-        M.toast({html: 'Produto nao encontrado', });
+        M.toast({html: 'Produto nao encontrado', classes: 'rounded red'});
     }
+    barCode.value = ''
+    quantity.value = '1'
 }
 
 
@@ -55,15 +76,18 @@ function addToShopCar(product, quantity) {
     if (!added)
         SHOP_CAR.push({product, quantity})
     
-    M.toast({html: 'Produto adicionado!', classes: 'rounded'});
+    M.toast({html: `${product.dataValues.name.toUpperCase()} adicionado!`, classes: 'rounded green'});
 }
 
 
 function removeFromShopCar(event) {
-    let barCode = event.path[3].getAttribute('bar-code')
+    const target = event.target
+    const pathTr = target.nodeName === 'I' ? 3 : 2
+    
+    let barCode = event.path[pathTr].getAttribute('bar-code')
 
     SHOP_CAR = SHOP_CAR.filter(product => {
-        return product.product.dataValues.barCode.indexOf(barCode) === -1
+        return product.product.dataValues.barCode != barCode
     })
     
     renderTableOfProducts()
@@ -71,18 +95,65 @@ function removeFromShopCar(event) {
 
 
 function decreaseOne(event) {
-    let barCode = event.path[3].getAttribute('bar-code')
+    const target = event.target
+    const pathTr = target.nodeName === 'I' ? 3 : 2
+
+    let barCode = event.path[pathTr].getAttribute('bar-code')
     
     for (let i = 0; i < SHOP_CAR.length; i++) {
         let productInside = SHOP_CAR[i]
 
-        if (productInside.product.dataValues.barCode.indexOf(barCode) != -1) {
+        if (productInside.product.dataValues.barCode === barCode) {
             productInside.quantity -= 1;
             if (productInside.quantity === 0)
                 SHOP_CAR.splice(i, 1)
         }
     }
     renderTableOfProducts()
+}
+
+
+function descounOnTableRow() {
+    const modal = document.querySelector('.modal')
+    let percent = modal.querySelector('#descount-product-percent').value
+    let money = modal.querySelector('#descount-product-money').value
+    money = money.replace(',' , '.')
+    const barCode = modal.querySelector('#bar-code-for-descount').innerHTML
+
+    const isPercent = percent != ''
+    let descount;
+    if (isPercent)
+        descount = parseInt(percent)
+    else
+        descount = parseFloat(money)
+    
+    descountProduct(descount, barCode, {percent: isPercent})
+    renderTableOfProducts()
+}
+
+
+function descountProduct(descount, barCode, type) {
+    if (type.percent) {
+        descount = 1 - (descount / 100)
+    }
+
+    for (let i = 0; i < SHOP_CAR.length; i++) {
+        let productInside = SHOP_CAR[i]
+        let productBarCode = productInside.product.dataValues.barCode
+        
+        if (productBarCode === barCode) {
+            let price = productInside.product.dataValues.price
+            
+            if (type.percent)
+                price = price * descount
+            else
+                price -= descount
+            price = price > 0 ? price : 0   
+            price = parseFloat(price.toFixed(2))
+            productInside.product.dataValues.price = price
+            break
+        }
+    }
 }
 
 
@@ -106,14 +177,28 @@ function createTableRow(product, quantity) {
     let price = newRow.insertCell(2)
     let btn = newRow.insertCell(3)
     
+    const btnDelete = `<button class="waves-effect waves-light btn red darken-2 delete" type="button">
+        <i class="samll material-icons">delete</i></button> `
     
+    const btnDecrease = `<button class="waves-effect waves-light btn deep-orange darken-2 decrease" type="button">
+            <i class="samll material-icons">exposure_neg_1</i></button> `
+    
+    const btnDescount = `<button 
+        class="waves-effect waves-light btn light-blue darken-4 add-descount tooltipped modal-trigger" 
+        type="button" data-position="bottom" data-tooltip="Desconto no produto" 
+        data-target="modal-descount">
+            <i class="fas fa-percent font-size-1"></i></button> `
+
     name.appendChild(document.createTextNode(product.dataValues.name.toUpperCase()))
     quantityCell.appendChild(document.createTextNode(quantity))
-    btn.innerHTML = `<button class="waves-effect waves-light btn red darken-2 delete" type="button"><i class="samll material-icons">delete</i></button>
-    <button class="waves-effect waves-light btn   deep-orange darken-2 decrease" type="button"><i class="samll material-icons">exposure_neg_1</i></button>`
+    btn.innerHTML = btnDelete + btnDecrease + btnDescount
+        
+        
+
     const priceFormated = FormatNumber.real(product.dataValues.price)
     price.appendChild(document.createTextNode(priceFormated))
     listennerActionOnTable()
+    MaterializeListener.modal()
 }
 
 
@@ -125,9 +210,27 @@ function updateTotalValue() {
 }
 
 
+function openModalDescount(event) {
+    const target = event.target
+    const pathTr = target.nodeName === 'I' ? 3 : 2
+
+    let barCode = event.path[pathTr].getAttribute('bar-code')
+    let product = SHOP_CAR.filter(prod => { return prod.product.dataValues.barCode === barCode})[0]
+
+    let modal = document.querySelector('.modal')
+    modal.querySelector('#bar-code-for-descount').innerHTML = barCode
+    modal.querySelector('#product-descount-name').innerHTML = product.product.dataValues.name.toUpperCase()
+
+    let instance = M.Modal.getInstance(modal);
+    instance.open()
+}
+
+
 function listennerActionOnTable() {
     listennerOnDelete()
     listennetOnDecrease()
+    listennerOnDescount()
+    MaterializeListener.tooltips()
 }
 
 function listennerOnDelete() {
@@ -140,5 +243,12 @@ function listennerOnDelete() {
 function listennetOnDecrease() {
     document.querySelectorAll('.decrease').forEach(node => {
         node.addEventListener('click', decreaseOne)
+    })
+}
+
+
+function listennerOnDescount() {
+    document.querySelectorAll('.add-descount').forEach(node => {
+        node.addEventListener('click', openModalDescount)
     })
 }

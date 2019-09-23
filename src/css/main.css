@@ -29,6 +29,9 @@ body {
 }
 /* end customize scrollbar */
 
+.font-size-1 {
+  font-size: 15px !important;
+}
 
 .rotate-30 {
   transform: rotate(30deg);
@@ -58,7 +61,7 @@ body {
 }
 
 .header {
-    height: 35%;
+    height: 24%;
 }
 
 .align-items-center {

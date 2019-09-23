@@ -5,7 +5,7 @@
 
 #toast-container {
     top: auto !important;
-    right: auto !important;
+    right: 13px;
     bottom: 10%;
-    left: 40%;  
+    left: auto !important;  
 }

@@ -28,8 +28,7 @@
                 </div>
 
                 <div class="input-field col s2">
-                    <i class="material-icons prefix align-bottom">exposure_plus_1</i>
-                    <input id="quantity" type="text" class="validate" value="1">
+                    <input id="quantity" type="number" min="1" step="1" class="validate" value="1">
                     <label for="quantity">Quantidade</label>
                 </div>
 
@@ -42,11 +41,10 @@
                     </button>
 
                     <button id="finalizar" 
-                            class="waves-effect waves-light btn light-blue darken-1 col s1 ml-4 tooltipped" 
+                            class="waves-effect waves-light btn green darken-4 col s3 ml-4 tooltipped" 
                             type="button" 
                             data-position="bottom" data-tooltip="Salvar e imprimir lista de compras">
-
-                            <i class="fas fa-percent"></i> <span class="align-top ">Add 2</span>
+                            Finalizar compra
                     </button>
                 </div>
                 
@@ -66,6 +64,33 @@
                     </tbody>
                   </table>
             </form>
+        </div>
+
+        <!-- Modal descount -->
+        <div id="modal-descount" class="modal mt-5">
+            <div class="modal-content">
+                <div id="bar-code-for-descount" hidden></div>
+                <h4>Desconto no produto <span id="product-descount-name"></span></h4>
+
+                <ul class="collapsible popout mt-4">
+                    <li class="active">
+                        <div class="collapsible-header"><i class="fas fa-percent font-size-1"></i>Porcentagem</div>
+                        <div class="collapsible-body">
+                            <input placeholder="exemplo: 50 %" id="descount-product-percent" type="number" min="0" max="100">    
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">attach_money</i>Dinheiro</div>
+                        <div class="collapsible-body">
+                            <input placeholder="exemplo: R$ 0,50" id="descount-product-money" type="number" min="0" step="0.01">    
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat save">Adicionar</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+            </div>
         </div>
 
         </div>
