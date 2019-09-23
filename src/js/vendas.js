@@ -41,7 +41,11 @@ async function addProductToTable() {
         renderTableOfProducts()
     }
     else {
+<<<<<<< HEAD
         M.toast({html: 'Produto nao encontrado', classes: 'rounded red'});
+=======
+        M.toast({html: 'Produto nao encontrado', classes: 'red darken-4'});
+>>>>>>> 5a501b3a3df03043148832c022260e416d9fb852
     }
     barCode.value = ''
     quantity.value = '1'
