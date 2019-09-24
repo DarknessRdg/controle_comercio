@@ -1,4 +1,5 @@
 const { Product } = require('../models/Product')
+const { Order, OrderProduct } = require('../models/Order')
 const FormatNumber = require('../js/utils/formatNumbers')
 const MaterializeListener = require('../js/MaterializeListeners')
 
@@ -19,6 +20,11 @@ document.querySelector('#descount-product-money').addEventListener('blur', () =>
 })
 
 document.querySelector('.modal').querySelector('.save').addEventListener('click', descounOnTableRow)
+document.querySelector('.modal').querySelectorAll('input').forEach(input => {
+    input.addEventListener('keyup', modalDefaultButton)
+})
+
+document.querySelector("#endShopping").addEventListener('click', endShopping)
 
 
 let SHOP_CAR = []
@@ -28,6 +34,15 @@ function clickAddOnEnterPressed(event) {
     const ENTER = 13
     if (event.keyCode === ENTER)
         document.querySelector('#addProduct').click()
+}
+
+
+function modalDefaultButton(event) {
+    const ENTER = 13
+    if (event.keyCode === ENTER) {
+        const modal = document.querySelector('.modal')
+        modal.querySelector('.save').click()
+    }
 }
 
 
@@ -41,11 +56,7 @@ async function addProductToTable() {
         renderTableOfProducts()
     }
     else {
-<<<<<<< HEAD
-        M.toast({html: 'Produto nao encontrado', classes: 'rounded red'});
-=======
-        M.toast({html: 'Produto nao encontrado', classes: 'red darken-4'});
->>>>>>> 5a501b3a3df03043148832c022260e416d9fb852
+        M.toast({html: 'Produto nao encontrado', classes: 'rounded red no-print'});
     }
     barCode.value = ''
     quantity.value = '1'
@@ -80,7 +91,7 @@ function addToShopCar(product, quantity) {
     if (!added)
         SHOP_CAR.push({product, quantity})
     
-    M.toast({html: `${product.dataValues.name.toUpperCase()} adicionado!`, classes: 'rounded green'});
+    M.toast({html: `${product.dataValues.name.toUpperCase()} adicionado!`, classes: 'rounded green no-print'});
 }
 
 
@@ -117,7 +128,9 @@ function decreaseOne(event) {
 }
 
 
-function descounOnTableRow() {
+function descounOnTableRow(event) {
+    event.preventDefault()
+
     const modal = document.querySelector('.modal')
     let percent = modal.querySelector('#descount-product-percent').value
     let money = modal.querySelector('#descount-product-money').value
@@ -141,12 +154,15 @@ function descountProduct(descount, barCode, type) {
         descount = 1 - (descount / 100)
     }
 
+    let amountDescount = 0
+
     for (let i = 0; i < SHOP_CAR.length; i++) {
         let productInside = SHOP_CAR[i]
         let productBarCode = productInside.product.dataValues.barCode
         
         if (productBarCode === barCode) {
             let price = productInside.product.dataValues.price
+            const originalPrice = price
             
             if (type.percent)
                 price = price * descount
@@ -155,9 +171,12 @@ function descountProduct(descount, barCode, type) {
             price = price > 0 ? price : 0   
             price = parseFloat(price.toFixed(2))
             productInside.product.dataValues.price = price
+
+            amountDescount = originalPrice - price
             break
         }
     }
+    M.toast({html: 'Desconto: R$ ' + amountDescount, classes: 'rounded no-print'});
 }
 
 
@@ -188,7 +207,7 @@ function createTableRow(product, quantity) {
             <i class="samll material-icons">exposure_neg_1</i></button> `
     
     const btnDescount = `<button 
-        class="waves-effect waves-light btn light-blue darken-4 add-descount tooltipped modal-trigger" 
+        class="waves-effect waves-light btn light-blue darken-4 add-descount tooltipped modal-trigger no-print" 
         type="button" data-position="bottom" data-tooltip="Desconto no produto" 
         data-target="modal-descount">
             <i class="fas fa-percent font-size-1"></i></button> `
@@ -255,4 +274,85 @@ function listennerOnDescount() {
     document.querySelectorAll('.add-descount').forEach(node => {
         node.addEventListener('click', openModalDescount)
     })
+}
+
+
+async function endShopping() {
+    if (SHOP_CAR.length === 0)
+        M.toast({html: 'Lista vazia!', classes: 'rounded red no-print'})
+    else {
+        const order = await Order.create({paid: true})
+        const orderId = order.dataValues.id
+        
+        const promisse = SHOP_CAR.map(async (product) => {
+            const productId = product.product.dataValues.id
+            const quantity = product.quantity
+            const productPrice = product.product.dataValues.price
+            await OrderProduct.create({productId, quantity, productPrice, orderId})
+        })
+        await Promise.all(promisse)
+
+        const listOfProducts = await OrderProduct.findAll(
+            {where: {orderId}
+        })
+
+        await renderNotinha(listOfProducts)
+        window.print()
+        SHOP_CAR = []
+        renderTableOfProducts()
+    }
+}
+
+
+async function renderNotinha(orderProducts) {
+    const notinha = document.querySelector('#notinha')
+    const date = notinha.querySelector('.date')
+    const idCupom = notinha.querySelector('.id-cupom')
+    const total = notinha.querySelector('.total')
+    
+    let tbody = notinha.querySelector('table>tbody')
+    tbody.innerHTML = ''
+    const totalPrice = await notinhaProducts(tbody, orderProducts)
+    notinhaDate(date)
+    idCupom.innerHTML = orderProducts[0].dataValues.orderId
+    total.innerHTML = totalPrice
+}
+
+
+function notinhaDate(node) {
+    const date = new Date()
+    const strDate = date.toLocaleDateString()
+    const time = date.getHours().toString() + ':' + date.getMinutes().toString()
+    node.innerHTML = strDate + ' ' + time
+}
+
+
+async function notinhaProducts(tbody, model) {
+    let sum = 0
+    const promisse = model.map(async (orderProduct) => {
+        let row = tbody.insertRow(-1)
+        let name = row.insertCell(0)
+        let quantity = row.insertCell(1)
+        let price = row.insertCell(2)
+        price.classList.add('text-right')
+        quantity.classList.add('text-center')
+
+        const product = await Product.findOne({
+            where: {
+                id: orderProduct.dataValues.productId
+            }
+        })
+
+        name.appendChild(document.createTextNode(product.dataValues.name.toUpperCase()))
+        quantity.appendChild(document.createTextNode(orderProduct.dataValues.quantity))        
+
+        let priceFormated = FormatNumber.real(orderProduct.dataValues.productPrice)
+        priceFormated = priceFormated.replace('R$', '.')
+        price.appendChild(document.createTextNode(priceFormated))
+
+        sum += orderProduct.dataValues.productPrice * orderProduct.dataValues.quantity
+    })
+    await Promise.all(promisse)
+
+    return sum;
 }

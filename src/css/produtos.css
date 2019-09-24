@@ -25,3 +25,10 @@ span.price-badge {
             box-sizing: border-box;
     border-radius: 2px;
 }
+
+#toast-container {
+    top: auto !important;
+    right: 15px;
+    bottom: 10%;
+    left: auto !important;  
+}

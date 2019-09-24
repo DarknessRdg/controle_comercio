@@ -12,7 +12,7 @@ const Client = sequelize.define('client', {
         allowNull: false,
         unique: true
     },
-    birth_date: {
+    birthDate: {
         type: Sequelize.DATEONLY
     },
     deletedAt: {

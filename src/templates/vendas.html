@@ -10,15 +10,16 @@
 
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/venda.css">
+    <link rel="stylesheet" media="print" href="../css/print.css">
     <meta charset="UTF-8">
     <title>Vendas</title>
 </head>
 <body>
-    <div class="header align-items-center mt-0 teal darken-4 backgroun-hearder">
+    <div class="header align-items-center mt-0 teal darken-4 backgroun-hearder no-print">
         <h2 class="center-align white-text ">Vendas</h2>
     </div>
 
-    <div class="container mt-5">
+    <div class="container mt-5 no-print">
         <div class="row">
             <form class="col s12">
                 <div class="input-field col s5">
@@ -34,14 +35,14 @@
 
                 <div class="mt-3 red">
                     <button id="addProduct" 
-                            class="waves-effect waves-light btn light-blue darken-1 col s1 ml-4 tooltipped" 
+                            class="waves-effect waves-light btn light-blue darken-1 col s1 ml-4 tooltipped no-print"
                             type="button" 
                             data-position="bottom" data-tooltip="Adicionar produto a lista de compras">
                         <i class="samll material-icons">add_shopping_cart</i> <span class="align-top ">Add</span>
                     </button>
 
-                    <button id="finalizar" 
-                            class="waves-effect waves-light btn green darken-4 col s3 ml-4 tooltipped" 
+                    <button id="endShopping" 
+                            class="waves-effect waves-light btn green darken-4 col s3 ml-4 tooltipped no-print" 
                             type="button" 
                             data-position="bottom" data-tooltip="Salvar e imprimir lista de compras">
                             Finalizar compra
@@ -67,7 +68,7 @@
         </div>
 
         <!-- Modal descount -->
-        <div id="modal-descount" class="modal mt-5">
+        <div id="modal-descount" class="modal mt-5 no-print">
             <div class="modal-content">
                 <div id="bar-code-for-descount" hidden></div>
                 <h4>Desconto no produto <span id="product-descount-name"></span></h4>
@@ -92,9 +93,30 @@
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
             </div>
         </div>
-
-        </div>
     </div>
+
+    <div id="notinha">
+        <p class="center">CUPOM</p>
+        <h6 class="center border-bottom pb-1">Comércio Santa Clara</h6>
+        <h5 class="center bold">CUPOM N° <span class="id-cupom">132</span> </h5>
+        <p class="bold center border-bottom"> ** cupom não fiscal **</p>
+        <p>Data: <span class="text-right d-block date">26/09/2000 12:26</span> </p>
+        
+        <table class="mt-3">
+            <thead>
+                <tr class="border-bottom bold">
+                    <th>PRODUTO</th>
+                    <th class="text-center">QTD</th>
+                    <th class="text-right">PREÇO R$</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+        <h6 class="bold">Total R$: <span class="d-block text-right total"> 123</span></h6>
+        <p class="center">Obrigado, volte sempre !</p>
   <script type="text/javascript" src="../js/main.js"></script>
   <script type="text/javascript" src="../js/vendas.js"></script>
 </body>

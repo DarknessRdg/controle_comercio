@@ -13,7 +13,7 @@ const Employee = sequelize.define('employee', {
         allowNull: false,
         isNumeric: true
     },
-    data_nascimento: {
+    brirthDate: {
         type: Sequelize.DATEONLY,
         allowNull: false
     },

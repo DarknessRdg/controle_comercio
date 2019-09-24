@@ -9,3 +9,7 @@
     bottom: 10%;
     left: auto !important;  
 }
+
+#notinha {
+    display: none;
+}

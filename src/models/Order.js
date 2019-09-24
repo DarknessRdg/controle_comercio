@@ -6,49 +6,50 @@ const { Client } = require('./Client')
 const { Product } = require('./Product')
 
 
-const Sale = sequelize.define('sale', {
-    paga: {
+const Order = sequelize.define('order', {
+    paid: {
         type: Sequelize.BOOLEAN,
         allowNull: false
     }
 }, {paranoid: true})
 
-Sale.belongsTo(Employee, {
+Order.belongsTo(Employee, {
     foreignKey: {
-        allowNull: false
+        allowNull: true
     },
     onDelete: 'cascade'
 })
 
-Sale.belongsTo(Client, {
+Order.belongsTo(Client, {
     foreignKey: {
-        allowNull: false
+        allowNull: true
     },
     onDelete: 'cascade'
 })
 
 
-const Order = sequelize.define('order', {
+const OrderProduct = sequelize.define('orderProduct', {
     quantity: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 1
     },
-    product_price: {
+    productPrice: {
         type: Sequelize.FLOAT,
         allowNull: false
     }
 })
 
-Order.belongsTo(Sale, {
+OrderProduct.belongsTo(Order, {
     foreignKey: {allowNull: false}, 
     onDelete: 'cascade'
 })
 
-Order.belongsTo(Product, {
+OrderProduct.belongsTo(Product, {
     foreignKey: {allowNull: false}, 
     onDelete: 'cascade'
 })
 
 
-module.exports = { Sale, Order }
+
+module.exports = { OrderProduct, Order }

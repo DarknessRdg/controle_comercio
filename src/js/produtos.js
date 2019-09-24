@@ -162,7 +162,7 @@ async function getAllProducts() {
 
 
 async function createProduct() {
-    const name = document.querySelector('#name').value
+    const name = document.querySelector('#name').value.toUpperCase()
     const barCode = document.querySelector('#bar-code').value
     const price = document.querySelector('#price').value.replace(',', '.')
 
@@ -179,8 +179,9 @@ async function createProduct() {
         if (deleted.length === 0) {
             try {
                 let newProduct = await Product.create({name, barCode, price})
+                M.toast({html: 'Produto adicionardo com sucesso!', classes: 'rounded green'})
             }catch (error) {
-                console.log(error)
+                M.toast({html: 'Error ao adicionar produto!', classes: 'rounded red'})
                 return
             }
         }else {

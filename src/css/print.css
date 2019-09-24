@@ -1,0 +1,20 @@
+.no-print {
+    display: none !important;
+}
+
+#notinha {
+    color: black;
+    all: unset;
+}
+
+#notinha > table > tbody > tr {
+    border-bottom: black dotted 1px !important;
+}
+
+#notinha > table > thead > tr {
+    border-bottom: black dotted 1px !important;
+}
+
+.border-bottom {
+    border-bottom: black dotted 1px;
+}

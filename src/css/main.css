@@ -29,6 +29,10 @@ body {
 }
 /* end customize scrollbar */
 
+.bold {
+  font-weight: bold;
+}
+
 .font-size-1 {
   font-size: 15px !important;
 }
@@ -62,6 +66,18 @@ body {
 
 .header {
     height: 24%;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-left {
+    text-align: left !important;
 }
 
 .align-items-center {
