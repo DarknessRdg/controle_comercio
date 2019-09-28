@@ -23,10 +23,16 @@ function tooltips () {
     var instance = M.Tooltip.init(elems, {inDuration: 100}, false, 100);
 }
 
+function select() {
+    const elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems, {});
+}
+
 module.exports = { 
     collapsible,
     tabs,
     modal,
     chips,
-    tooltips
+    tooltips,
+    select
 }
