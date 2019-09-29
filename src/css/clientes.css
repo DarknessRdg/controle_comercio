@@ -1,0 +1,12 @@
+.backgroun-hearder {
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQQaAwIfPqFAlogkok_3szSPie88o9yWPdZRRaQYFWWZlv-wtC-");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#toast-container {
+    top: auto !important;
+    right: 15px;
+    bottom: 10%;
+    left: auto !important;  
+}
