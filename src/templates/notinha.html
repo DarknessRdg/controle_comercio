@@ -15,7 +15,7 @@
         <h2 class="center-align white-text ">Notinhas</h2>
     </div>
 
-    <div class="container mt-5">
+    <div class="mt-5">
       <div class="row">
 
           <!-- filter -->
@@ -28,7 +28,7 @@
               </div>
               <div class="mt-3">
                 <select id="month-input">
-                  <option value="" selected>Escolha o mês</option>
+                  <option value="" selected>Todos os meses</option>
                   <option value="0">Janeiro</option>
                   <option value="1">Fevereiro</option>
                   <option value="2">Março</option>
@@ -42,23 +42,22 @@
                   <option value="10">Novembro</option>
                   <option value="11">Dezembro</option>
                 </select>
-                <label>Materialize Select</label>
               </div>
               <p class="mt-4">
                 <label>
-                  <input name="group1" type="radio" checked/>
+                  <input id="all-input" name="group1" type="radio" checked/>
                   <span>Todas</span>
                 </label>
               </p>
               <p class="mt-4">
                 <label>
-                  <input name="group1" type="radio" />
+                  <input id="paid-input" name="group1" type="radio" />
                   <span>Pagas</span>
                 </label>
               </p>
               <p class="mt-4">
                 <label>
-                  <input name="group1" type="radio" />
+                  <input id="unpaid-input" name="group1" type="radio" />
                   <span>Fiadas</span>
                 </label>
               </p>
@@ -117,8 +116,15 @@
                 </div>
               </div>
             </div>
+      </div>
+    </div>
 
-        <!-- end row -->
+    <div id="modal-notinha-details" class="modal">
+      <div class="modal-content">
+
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Voltar</a>
       </div>
     </div>
   <script type="text/javascript" src="../js/main.js"></script>

@@ -187,6 +187,8 @@ async function createProduct() {
         }else {
             deleted = deleted[0]
             deleted.setDataValue('deletedAt', null)
+            deleted.update({name, barCode, price, deletedAt: null})
+            M.toast({html: 'Produto ataualizado com sucesso!', classes: 'rounded blue'})
         }
 
         clearAddFields()

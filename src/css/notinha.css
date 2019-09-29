@@ -1,7 +1,37 @@
+.backgroun-hearder {
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTC3DuIqPlf4ydwwbZ1FCg0VVk7rm-hj30c-4a3QBa2Mh1FuiJA");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#toast-container {
+    top: auto !important;
+    right: 15px;
+    bottom: 10%;
+    left: auto !important;  
+}
+
 .filter-header {
     border-radius: 2em;
 }
 
 .card-title {
     font-weight: 300 !important;
+}
+
+.notinha {
+    min-height: 250px;
+}
+
+.notinha>button {
+    position: relative;
+    left: 25%;
+    top: 15px;
+    margin-right: 5px; 
+}
+
+#filter {
+    position: sticky !important;
+    left: 10px;
+    top: 10px;
 }
