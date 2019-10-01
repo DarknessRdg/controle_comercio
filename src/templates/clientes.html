@@ -4,7 +4,10 @@
     <!-- materialize -->
     <link rel="stylesheet" href="../css/materialize/css/materialize.min.css">
     <script type="text/javascript" src="../css/materialize/js/materialize.min.js"></script>
-  
+    
+    <!-- font awesome -->
+    <link href="../assets/fontawesome-free-5.11.1-web/css/all.css" rel="stylesheet">
+
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/clientes.css">
     <meta charset="UTF-8">
@@ -15,6 +18,79 @@
         <h2 class="center-align white-text ">Clientes</h2>
     </div>
 
+    <div class="container mt-4">
+        <div class="row">
+            <ul id="swipe" class="tabs">
+                <li class="tab col s3"><a href="#swipe-search">Pesquisar</a></li>
+                <li class="tab col s3"><a  href="#swipe-add">Adicionar</a></li>
+            </ul>
+        </div>
+        <div class="row">
+            <div id="swipe-search">
+                <div class="input-field col s10">
+                    <i class="material-icons prefix">search</i>
+                    <input type="text" id="search-input" class="autocomplete" placeholder="Digite o nome ou o CPF do cliente" >
+                    <label for="search-input" id="label-search">Pesquisar cliente</label>
+                    <div id="load-products" class="progress hide">
+                        <div class="indeterminate"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="clients" class="col s10">
+
+            </div> 
+            
+            <div id="swipe-add">
+                <form id="form-create">
+                    <div class="row">
+                        <div class="input-field col s7">
+                            <i class="material-icons prefix">format_color_text</i>
+                            <input id="name" type="text" class="validate" required>
+                            <label for="name">Nome <span class="red-text">*</span></label>
+                            <span class="helper-text" data-error="Nome inválido!" data-success="Ok!">Digite o nome completo do cliente</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s7">
+                            <i class="far fa-id-card prefix"></i>
+                            <input id="cpf" type="text" class="validate" required>
+                            <label for="cpf">CPF <span class="red-text">*</span></label>
+                            <span class="helper-text" data-error="CPF inválido!" data-success="Ok!">Digite o CPF do cliente</span>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="input-field col s7">
+                            <i class="far fa-calendar-alt prefix"></i>
+                            <input id="birth" type="text" class="validate" required>
+                            <label for="bar-code">Data de nascimento <span class="red-text">*</span></label>
+                            <span class="helper-text" data-error="Código inválido!" data-success="Ok!">Selecione a data de nascimento do cliente</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s7">
+                            <i class="material-icons prefix">phone_iphone</i>
+                            <input id="phone" type="text" class="validate" required>
+                            <label for="bar-code">Número de telefone</label>
+                            <span class="helper-text" data-error="Código inválido!" data-success="Ok!">Digite o número de telefone do cliente</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s7">
+                            <i class="material-icons prefix">home</i>
+                            <input id="bar-code" type="text" class="validate" required>
+                            <label for="bar-code">Endereco</label>
+                            <span class="helper-text" data-error="Código inválido!" data-success="Ok!">Digite o número de telefone do cliente</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="btn waves-effect waves-lightm ml-5" type="submit" name="action">salvar
+                            <i class="material-icons right">done</i>
+                        </button>
+                    </div>
+                </form>    
+            </div>
+        </div>
+    </div>
   <script type="text/javascript" src="../js/main.js"></script>
   <script type="text/javascript" src="../js/clientes.js"></script>
 </body>
