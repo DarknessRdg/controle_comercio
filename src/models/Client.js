@@ -13,7 +13,8 @@ const Client = sequelize.define('client', {
         unique: true
     },
     birthDate: {
-        type: Sequelize.DATEONLY
+        type: Sequelize.DATEONLY,
+        allowNull: false,
     },
     deletedAt: {
         type: Sequelize.DATE
@@ -30,6 +31,10 @@ const ClientFone = sequelize.define('clientFone', {
 
 
 const ClientAddress = sequelize.define('clientAddress', {
+    neighborhood: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     street: {
         type: Sequelize.STRING,
         allowNull: false
