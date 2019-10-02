@@ -22,7 +22,7 @@ const Client = sequelize.define('client', {
 }, {paranoid: true})
 
 
-const ClientFone = sequelize.define('clientFone', {
+const ClientPhone = sequelize.define('clientPhone', {
     fone: {
         type: Sequelize.STRING,
         allowNull: false
@@ -54,7 +54,7 @@ const ClientAddress = sequelize.define('clientAddress', {
 
 // relations: 1..N 
 ClientAddress.belongsTo(Client, {foreignKey: {allowNull: false}, onDelete: 'cascade'})
-ClientFone.belongsTo(Client, {foreignKey: {allowNull: false}, onDelete: 'cascade'})
+ClientPhone.belongsTo(Client, {foreignKey: {allowNull: false}, onDelete: 'cascade'})
 
 
-module.exports = {Client,  ClientFone, ClientAddress}
+module.exports = {Client,  ClientPhone, ClientAddress}
