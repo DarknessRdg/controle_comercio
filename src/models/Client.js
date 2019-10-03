@@ -23,7 +23,7 @@ const Client = sequelize.define('client', {
 
 
 const ClientPhone = sequelize.define('clientPhone', {
-    fone: {
+    phone: {
         type: Sequelize.STRING,
         allowNull: false
     }
