@@ -59,7 +59,7 @@ async function createClient(event) {
         if (phoneDatas.phone != '')
             await ClientPhone.create(phoneDatas, {transaction: t})
     }).then(() => {
-        M.toast({html: 'Client criado com sucesso!', classes: 'rounded green'});
+        M.toast({html: 'Cliente criado com sucesso!', classes: 'rounded green'});
         
         clearFlields([
             'name', 'birth', 'cpf', 
@@ -173,7 +173,7 @@ async function openModalEdit(event) {
 
     modalHeader.innerHTML = FormatName.person(client.dataValues.name)
     notinhasLink.setAttribute('href', '../templates/notinha.html?id=' + client.dataValues.id)
-    editLink.addEventListener('click', eneableEditInputs)
+    editLink.addEventListener('click', () => { disableEditInputs(false) })
 
     renderModalClient(client, phones, address)
     M.Modal.getInstance(modal).open()
@@ -242,6 +242,18 @@ function renderModalClient(client, phones, address) {
         content.appendChild(node.complement.label)
         content.appendChild(node.complement.input)
     }
+
+    let save = document.createElement('button')
+    save.setAttribute('type', 'button')
+    save.classList.add('btn')
+    save.classList.add('waves-effect')
+    save.classList.add('waves-light')
+    save.classList.add('save-edit')
+    save.appendChild(document.createTextNode('Salvar'))
+    content.appendChild(save)
+
+    disableEditInputs(true)
+    listenerUpdate()
 }
 
 
@@ -251,17 +263,14 @@ function createDataClient(client) {
     let name = document.createElement('input')
     name.setAttribute('type', 'text')
     name.setAttribute('value', client.name)
-    name.disabled = true
 
     let cpf = document.createElement('input')
     cpf.setAttribute('type', 'text')
     cpf.setAttribute('value', client.cpf)
-    cpf.disabled = true
     
     let birthDate = document.createElement('input')
     birthDate.setAttribute('type', 'date')
     birthDate.setAttribute('value', client.birthDate)
-    birthDate.disabled = true
 
     return {name, cpf ,birthDate}
 }
@@ -272,6 +281,7 @@ function createClientPhones(phones) {
     for (phone of phones) {
         let input = document.createElement('input')
         input.setAttribute('type', 'text')
+        input.classList.add('phone-edit')
         input.setAttribute('value', phone.dataValues.phone)
         input.disabled = true
         
@@ -330,10 +340,71 @@ function createInput(id, name) {
 }
 
 
-function eneableEditInputs() {
+function disableEditInputs(disabled) {
     const modal = document.querySelector('.modal-edit')
     for (input of modal.querySelectorAll('input')) {
         if (input.getAttribute('id') != 'cpf-edit')
-            input.disabled = false
+            input.disabled = disabled
     }
+
+    let save = modal.querySelector('.save-edit')
+    save.disabled = disabled
+}
+
+
+function listenerUpdate() {
+    const modal = document.querySelector('.modal-edit')
+    modal.querySelector('.save-edit').addEventListener('click', updateClient)
+}
+
+
+async function updateClient() {
+    const modal = document.querySelector('.modal-edit')
+    const cpf = modal.querySelector('#cpf-edit').value
+    const name = modal.querySelector('#name-edit').value.toLowerCase()
+    const birthDate = new Date(modal.querySelector('#birth-date-edit').value)
+    const clientDatas = {name, birthDate}
+
+    const phones = Array.from(modal.querySelectorAll('.phone-edit')).map(node => node.value)
+    
+    const neighborhood = modal.querySelector('#bairro-edit').value
+    const street = modal.querySelector('#rua-edit').value
+    const number = modal.querySelector('#num-edit').value
+    const cep = modal.querySelector('#cep-edit').value
+    const complement = modal.querySelector('#complement-edit').value
+    const addressDatas = {neighborhood, street, number, cep, complement }
+
+    const client = await Client.findOne({where: { cpf }})
+    addressDatas.clientId = client.id
+
+    ConnectionDataBase.transaction(async (t) => {
+        await client.update(clientDatas, {transaction: t})
+        
+        
+        if (addressDatas.cep != '') {
+            let address = await ClientAddress.findOne({where: {clientId: client.id}})
+            await address.update(addressDatas, {transaction: t})
+        }
+        
+        const phonesDataBase = await ClientPhone.findAll({ where: {clientId: client.id }})
+
+        for (phone in phones) {
+            for (phoneOnData in phonesDataBase) {
+                if (phone != phoneOnData)
+                    return
+                let phoneDatas = {phone: phones[phone], clientId: client.dataValues.id }
+                
+                if (phones[phone] != '') {
+                    await phonesDataBase[phoneOnData].update(phoneDatas, {transaction: t})
+                }
+            }
+        }
+    }).then(() => {
+        M.toast({html: 'Cliente atualizado com sucesso!', classes: 'rounded green'});
+        disableEditInputs(true)
+    }).catch(error =>{
+        M.toast({html: 'Cliente não foi ataualizado!', classes: 'rounded red'});
+        console.log(error);
+    })  
+
 }
