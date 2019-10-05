@@ -3,6 +3,7 @@ const { Order, OrderProduct } = require('../models/Order')
 const { Client } = require('../models/Client')
 const MaterializeListeners = require('../js/MaterializeListeners')
 const NumberFormater = require('../js/utils/formatNumbers')
+const NameFormater = require('../js/utils/formatNames')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 
@@ -37,17 +38,31 @@ function listenerUnpaidButtons() {
 
 
 function getClientId(URL) {
-    return URL.split('?id')[1]
+    return URL.split('?id=')[1]
 }
 
 function documentLoaded() {
     setDefaultInputYear();
+    
+    if (getClientId(URL)) {
+        filterNotinhas(new Event('submit'))
+        changePageTitleForUsersName()
+    }
 }
 
 
 function setDefaultInputYear() {
     let date = new Date()
     document.querySelector('#year-input').value = date.getFullYear()
+}
+
+
+async function changePageTitleForUsersName() {
+    const client = await Client.findOne({
+        where: {id: getClientId(URL)}
+    })
+    const name = NameFormater.person(client.dataValues.name)
+    document.querySelector('.header').querySelector('h2'). innerHTML = 'Notinhas do(a) ' + name;
 }
 
 
@@ -131,6 +146,8 @@ function renderLoadingNotinhas(visible) {
 
 async function renderOrders(orders) {
     let notinhas = document.querySelector('#notinhas')
+    if (orders.length === 0)
+        notinhas.innerHTML = '<h4 class="col s12 center">Nenhuma notinha encontrada</h4>'
     for (order of orders) {
         notinhas.appendChild(await createNotinhNode(order))
     }

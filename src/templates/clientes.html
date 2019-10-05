@@ -38,11 +38,10 @@
                         <div class="indeterminate"></div>
                     </div>
                 </div>
-            </div>
-            <div id="clients" class="col s10">
+                <div id="clients" class="col s10">
 
-            </div> 
-            
+                </div>
+            </div>
             <div id="swipe-add">
                 <form id="form-create">
                     <div class="row">
@@ -61,7 +60,7 @@
                             <span class="helper-text">Digite o CPF do cliente</span>
                         </div>
                     </div> 
-                    <div class="row">
+                    <div >
                         <div class="input-field col s12 m7 ">
                             <i class="far fa-calendar-alt prefix"></i>
                             <input id="birth" type="text" class="datepicker" required>
@@ -80,38 +79,52 @@
                     <div class="row">
                         <div class="input-field col s12 m12 l4">
                             <i class="material-icons prefix">home</i>
-                            <input id="adress-bairro" type="text">
-                            <label for="adress-bairro">Bairro</label>
+                            <input id="address-bairro" type="text">
+                            <label for="address-bairro">Bairro</label>
                             <span class="helper-text">Digite o bairro que o cliente mora</span>
                         </div>
                         <div class="input-field col s12 m12 l4">
-                            <input id="adress-rua" type="text">
-                            <label for="adress-rua">Rua</label>
+                            <input id="address-rua" type="text">
+                            <label for="address-rua">Rua</label>
                             <span class="helper-text">Digite o nome da rua que o cliente mora</span>
                         </div>
                         <div class="input-field col s12 m12 l4">
-                            <input id="adress-numero" type="text">
-                            <label for="adress-numero">Número</label>
+                            <input id="address-numero" type="text">
+                            <label for="address-numero">Número</label>
                             <span class="helper-text">Digite o número de telefone do cliente</span>
                         </div>
                         <div class="input-field col s12 m12 l4">
-                            <input id="adress-cep" type="text">
-                            <label for="adress-cep">CEP</label>
+                            <input id="address-cep" type="text">
+                            <label for="address-cep">CEP</label>
                             <span class="helper-text">Digite o CEPF de telefone do cliente</span>
                         </div>
                         <div class="input-field col s12 m12 l4">
-                            <input id="adress-complemento" type="text">
-                            <label for="adress-complemento">Complemento</label>
+                            <input id="address-complemento" type="text">
+                            <label for="address-complemento">Complemento</label>
                             <span class="helper-text">Digite algum ponto de referência</span>
                         </div>
                     </div>
                     <div class="row">
-                        <button class="btn waves-effect waves-lightm ml-5" type="submit" name="action">salvar
+                        <button class="btn waves-effect waves-light ml-5" type="submit" name="action">salvar
                             <i class="material-icons right">done</i>
                         </button>
                     </div>
                 </form>    
             </div>
+        </div>
+    </div>
+    <!-- end container -->
+    <div class="modal modal-edit">
+        <div class="modal-content">
+            <h4 id="modal-header"></h4>
+            <div class="content mt-3 row">
+              
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="waves-effect waves-green btn-flat edit-datas">Editar</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat notinhas">Notinhas</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
         </div>
     </div>
   <script type="text/javascript" src="../js/main.js"></script>
