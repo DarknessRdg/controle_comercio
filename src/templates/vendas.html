@@ -96,6 +96,52 @@
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
             </div>
         </div>
+
+        <!-- Modal end shopping -->
+        <div id="modal-end-shop" class="modal no-print">
+            <div class="modal-content pb-0 mb-0">
+                <div class="row">
+                    <div class="col s6">
+                        <h5>Total: <span id="total-end-shop">0,00</span></h5>
+                    </div>
+                    <div class="col s6">
+                        <h5>Troco: <span id="payback">0,00</span></h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input id="client-money" type="number" min="0" step="0.01" placeholder="Exemplo: 0,50" required>
+                        <label for="client-money">Dinheiro pago:</label>
+                    </div>
+                    <div class="col s12 input-field">
+                        <input id="client-cpf" type="text" placeholder="Digite o CPF do cliente" required>
+                        <label for="client-money">CPF:</label>
+                    </div>
+                    <div class="col s6 input-field">
+                        <input id="descount-percent" type="number" min="0" max="100" step="1" placeholder="Exemplo: 10">
+                        <label for="client-money">Desconto em porcentagem %:</label>
+                    </div>
+                    <div class="col s6 input-field">
+                        <input id="descount-money" type="number" min="0" step="0.01" placeholder="Exemplo: 0,50">
+                        <label for="client-money">Desconto em dinheiro R$:</label>
+                    </div>
+                    <a href="#!" class="waves-effect waves-green btn grey-text text-darken-3 white save">Aplicar desconto</a>
+
+                    <div class="switch col s12 mt-3">
+                        <label>
+                            <input type="checkbox">
+                            <span class="lever"></span>
+                            Compra fiada
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-0 mt-0">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat save"><i class="material-icons">cancel</i>Cancelar</a>
+                <a href="#!" class="waves-effect waves-green btn-flat save-end-shop"><i class="material-icons">local_printshop</i>Imprimir</a>
+            </div>
+        </div>
     </div>
 
     <div id="notinha">

@@ -9,6 +9,14 @@ const Op = Sequelize.Op
 
 const URL = document.URL
 
+const PAGE_SIZE = 3
+let PAGE = 0;
+const pagination = {
+    offset: PAGE * PAGE_SIZE,
+    limit: PAGE * PAGE_SIZE + PAGE_SIZE
+}
+
+
 MaterializeListeners.select()
 MaterializeListeners.modal()
 document.addEventListener('DOMContentLoaded', documentLoaded)
@@ -53,7 +61,11 @@ async function filterNotinhas(event) {
     const clientId = getClientId(URL)
     
     const where = prepareQuery(clientId, startDate, endDate) 
-    const orders = await Order.findAll({where, order: [['id', 'ASC']]})
+    const orders = await Order.findAll({
+        limit: pagination.limit,
+        offset: pagination.offset,
+        where, order: [['id', 'ASC']]
+    })
     let promise = renderOrders(orders)
     
     await Promise.all([promise])
@@ -122,7 +134,6 @@ async function renderOrders(orders) {
     for (order of orders) {
         notinhas.appendChild(await createNotinhNode(order))
     }
-    
 }
 
 async function createNotinhNode(order) {
@@ -130,7 +141,7 @@ async function createNotinhNode(order) {
 
     let div = document.createElement('div')
     div.classList.add('col')
-    div.classList.add('m3')
+    div.classList.add('m4')
     div.classList.add('mt-2')
 
     let card = document.createElement('div')
@@ -155,7 +166,7 @@ async function createNotinhNode(order) {
         btnStatus.classList.add('red')
         btnStatus.classList.add('unpaid-btn')
     }
-    
+
     card.appendChild(await createCardContent(order))
     card.appendChild(createCardFooter())
     card.appendChild(btnStatus)
@@ -224,7 +235,7 @@ async function openModalDetail(event) {
     const CARD_PATH = event.target.nodeName === 'I' ? 2 : 1
     const card = event.path[CARD_PATH]
     const orderId = card.getAttribute('order-id')
-    
+
     const modal = document.querySelector('.modal')
     let modalContent = modal.querySelector('.modal-content')
     const ul = await createOrderItemList(orderId)
@@ -238,7 +249,7 @@ async function openModalDetail(event) {
 
 async function createOrderItemList(id) {
     const orderProducts = await OrderProduct.findAll({where: {orderId: id}})
-
+    console.log(orderProducts)
     let ul = document.createElement('ul')
     ul.classList.add('collection')
     ul.classList.add('with-header')
@@ -264,7 +275,7 @@ async function createOrderItemList(id) {
         
         li.appendChild(quantity)
 
-        let productDatas = await Product.findOne({where: {id: product.dataValues.productId}})
+        let productDatas = await Product.findOne({where: {id: product.dataValues.productId}, paranoid: false})
         let priceFormated = NumberFormater.real(product.dataValues.productPrice)
         li.appendChild(document.createTextNode(productDatas.dataValues.name.toUpperCase() + ' - ' + priceFormated))
 

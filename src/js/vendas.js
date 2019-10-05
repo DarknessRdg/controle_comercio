@@ -2,6 +2,7 @@ const { Product } = require('../models/Product')
 const { Order, OrderProduct } = require('../models/Order')
 const FormatNumber = require('../js/utils/formatNumbers')
 const MaterializeListener = require('../js/MaterializeListeners')
+const ConnectionDatabase = require('../models/Connection')
 
 
 MaterializeListener.tooltips()
@@ -26,6 +27,8 @@ document.querySelector('.modal').querySelectorAll('input').forEach(input => {
 
 document.querySelector("#endShopping").addEventListener('click', endShopping)
 
+document.querySelector('#modal-end-shop').
+    querySelector('.save-end-shop').addEventListener('click', saveList)
 
 let SHOP_CAR = []
 
@@ -281,26 +284,53 @@ async function endShopping() {
     if (SHOP_CAR.length === 0)
         M.toast({html: 'Lista vazia!', classes: 'rounded red no-print'})
     else {
-        const order = await Order.create({paid: true})
-        const orderId = order.dataValues.id
-        
-        const promisse = SHOP_CAR.map(async (product) => {
+        openEndShoppingModal()
+    }
+}
+
+
+function openEndShoppingModal() {
+    const modal = document.querySelector('#modal-end-shop')
+    const instance = M.Modal.getInstance(modal)
+    instance.open()
+}
+
+
+async function saveList() {
+    const modal = document.querySelector('#modal-end-shop')
+    const instance = M.Modal.getInstance(modal)
+    instance.close()
+
+    const order = await Order.create({paid: true})
+    const orderId = order.dataValues.id
+
+    let promise = ConnectionDatabase.transaction(t => {
+
+        let promise = SHOP_CAR.map( (product) => {
             const productId = product.product.dataValues.id
             const quantity = product.quantity
             const productPrice = product.product.dataValues.price
-            await OrderProduct.create({productId, quantity, productPrice, orderId})
-        })
-        await Promise.all(promisse)
-
-        const listOfProducts = await OrderProduct.findAll(
-            {where: {orderId}
+            OrderProduct.create({productId, quantity, productPrice, orderId}, {transaction: t})
         })
 
-        await renderNotinha(listOfProducts)
-        window.print()
-        SHOP_CAR = []
-        renderTableOfProducts()
-    }
+        return Promise.all(promise)
+    }).then(result => {
+        M.toast({html: 'Compra salva!', classes: 'rounded green'})
+    }).catch(error => {
+        M.toast({html: 'Error salvar ao salvar compra!', classes: 'rounded red'})
+        console.log(error)
+    })
+
+    await Promise.resolve(promise)
+
+    const listOfProducts = await OrderProduct.findAll(
+        {where: {orderId}
+    })
+
+    await renderNotinha(listOfProducts)
+    window.print()
+    SHOP_CAR = []
+    renderTableOfProducts()
 }
 
 
