@@ -1,5 +1,6 @@
 const { Product } = require('../models/Product')
 const { Order, OrderProduct } = require('../models/Order')
+const { Client } = require('../models/Client')
 const FormatNumber = require('../js/utils/formatNumbers')
 const MaterializeListener = require('../js/MaterializeListeners')
 const ConnectionDatabase = require('../models/Connection')
@@ -20,7 +21,7 @@ document.querySelector('#descount-product-money').addEventListener('blur', () =>
     document.querySelector('#descount-product-percent').value = ''
 })
 
-document.querySelector('.modal').querySelector('.save').addEventListener('click', descounOnTableRow)
+document.querySelector('.modal').querySelector('.save').addEventListener('click', discountOnTableRow)
 document.querySelector('.modal').querySelectorAll('input').forEach(input => {
     input.addEventListener('keyup', modalDefaultButton)
 })
@@ -30,7 +31,35 @@ document.querySelector("#endShopping").addEventListener('click', endShopping)
 document.querySelector('#modal-end-shop').
     querySelector('.save-end-shop').addEventListener('click', saveList)
 
+document.querySelector('#modal-end-shop').
+    querySelector('#client-money').addEventListener('change', calculatePayback);
+document.querySelector('#modal-end-shop').
+    querySelector('#client-money').addEventListener('keyup', calculatePayback);
+
+document.querySelector('#modal-end-shop').
+    querySelector('.add-discount').addEventListener('click', discountOnTotal);
+
+
 let SHOP_CAR = []
+
+
+function calculatePayback(event) {
+    const input = event.path[0];
+    const paybackNode = document.querySelector('#payback');
+
+    const value = input.value.toLowerCase();
+    const totalText = document.querySelector('#total-end-shop').innerHTML;
+    const totalValue = parseFloat(totalText.replace('R$&nbsp;', ''));
+
+    if (isNaN(value) || value === '' || parseFloat(value) <= totalValue) {
+        paybackNode.innerHTML = FormatNumber.real(0.0);
+        return;
+    }
+    console.log((isNaN(value) || parseFloat(value) <= totalValue))
+    const payback = (parseFloat(value) - totalValue).toFixed(2);
+
+    paybackNode.innerHTML = FormatNumber.real(payback);
+}
 
 
 function clickAddOnEnterPressed(event) {
@@ -105,7 +134,7 @@ function removeFromShopCar(event) {
     let barCode = event.path[pathTr].getAttribute('bar-code')
 
     SHOP_CAR = SHOP_CAR.filter(product => {
-        return product.product.dataValues.barCode != barCode
+        return product.product.dataValues.barCode !== barCode
     })
     
     renderTableOfProducts()
@@ -131,7 +160,22 @@ function decreaseOne(event) {
 }
 
 
-function descounOnTableRow(event) {
+function shopCarTotal() {
+    let sum = 0;
+    SHOP_CAR.forEach(product => { sum += product.product.dataValues.price * product.quantity});
+    return sum;
+}
+
+
+
+function discountOnTotal(event) {
+    const discountPercent = document.querySelector('')
+    const total = shopCarTotal();
+    const newTotal = total
+}
+
+
+function discountOnTableRow(event) {
     event.preventDefault()
 
     const modal = document.querySelector('.modal')
@@ -140,7 +184,7 @@ function descounOnTableRow(event) {
     money = money.replace(',' , '.')
     const barCode = modal.querySelector('#bar-code-for-descount').innerHTML
 
-    const isPercent = percent != ''
+    const isPercent = percent !== ''
     let descount;
     if (isPercent)
         descount = parseInt(percent)
@@ -202,7 +246,7 @@ function createTableRow(product, quantity) {
     let quantityCell = newRow.insertCell(1)
     let price = newRow.insertCell(2)
     let btn = newRow.insertCell(3)
-    
+
     const btnDelete = `<button class="waves-effect waves-light btn red darken-2 delete" type="button">
         <i class="samll material-icons">delete</i></button> `
     
@@ -229,9 +273,7 @@ function createTableRow(product, quantity) {
 
 
 function updateTotalValue() {
-    let sum = 0
-    SHOP_CAR.forEach(product => { sum += product.product.dataValues.price * product.quantity})
-
+    const sum = shopCarTotal();
     document.querySelector('#total').innerHTML = FormatNumber.real(sum)
 }
 
@@ -284,6 +326,7 @@ async function endShopping() {
     if (SHOP_CAR.length === 0)
         M.toast({html: 'Lista vazia!', classes: 'rounded red no-print'})
     else {
+        document.querySelector('#total-end-shop').innerHTML = FormatNumber.real(shopCarTotal());
         openEndShoppingModal()
     }
 }
@@ -296,30 +339,48 @@ function openEndShoppingModal() {
 }
 
 
-async function saveList() {
-    const modal = document.querySelector('#modal-end-shop')
-    const instance = M.Modal.getInstance(modal)
-    instance.close()
+function modalEditClearFields() {
+    const modal = document.querySelector('#modal-end-shop');
+    modal.querySelector('#client-cpf').value = '';
+    modal.querySelector('#is-unpaid').checked =  false;
+    modal.querySelector('#discount-percent').value = '';
+    modal.querySelector('#discount-money').value = '';
+    modal.querySelector('#client-money').value = '';
+    modal.querySelector('#total-end-shop').value = FormatNumber.real(0.0)
+    modal.querySelector('#payback').value = FormatNumber.real(0.0)
+}
 
-    const order = await Order.create({paid: true})
-    const orderId = order.dataValues.id
+
+async function saveList() {
+    const modal = document.querySelector('#modal-end-shop');
+    const instance = M.Modal.getInstance(modal);
+    const cpf = modal.querySelector('#client-cpf').value.replace(',', '').replace('.', '');
+    const unpaid = modal.querySelector('#is-unpaid').checked;
+    instance.close();
+    modalEditClearFields()
+
+    let clientId = await Client.findOne({where: {cpf}});
+    clientId = clientId !== null ? clientId.dataValues.id : null;
+
+    const order = await Order.create({paid: !unpaid, clientId});
+    const orderId = order.dataValues.id;
 
     let promise = ConnectionDatabase.transaction(t => {
 
         let promise = SHOP_CAR.map( (product) => {
-            const productId = product.product.dataValues.id
-            const quantity = product.quantity
-            const productPrice = product.product.dataValues.price
+            const productId = product.product.dataValues.id;
+            const quantity = product.quantity;
+            const productPrice = product.product.dataValues.price;
             OrderProduct.create({productId, quantity, productPrice, orderId}, {transaction: t})
-        })
+        });
 
-        return Promise.all(promise)
+        return Promise.all(promise);
     }).then(result => {
-        M.toast({html: 'Compra salva!', classes: 'rounded green'})
+        M.toast({html: 'Compra salva!', classes: 'rounded green'});
     }).catch(error => {
-        M.toast({html: 'Error salvar ao salvar compra!', classes: 'rounded red'})
+        M.toast({html: 'Error salvar ao salvar compra!', classes: 'rounded red'});
         console.log(error)
-    })
+    });
 
     await Promise.resolve(promise)
 
