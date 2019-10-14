@@ -10,12 +10,8 @@ const Op = Sequelize.Op
 
 const URL = document.URL
 
-const PAGE_SIZE = 3
+const PAGE_SIZE = 12
 let PAGE = 0;
-const pagination = {
-    offset: PAGE * PAGE_SIZE,
-    limit: PAGE * PAGE_SIZE + PAGE_SIZE
-}
 
 
 MaterializeListeners.select()
@@ -23,6 +19,8 @@ MaterializeListeners.modal()
 document.addEventListener('DOMContentLoaded', documentLoaded)
 
 document.querySelector('#filter').addEventListener('submit', filterNotinhas)
+
+window.addEventListener('scroll', infinityScroll);
 
 function listenerDetailButtons() {
     document.querySelectorAll('.details').forEach(node => {
@@ -51,6 +49,13 @@ function documentLoaded() {
 }
 
 
+function infinityScroll() {
+    if ((window.innerHeight + window.scrollY) == document.body.scrollHeight) {
+        loadMoreNotinhas();
+    }
+}
+
+
 function setDefaultInputYear() {
     let date = new Date()
     document.querySelector('#year-input').value = date.getFullYear()
@@ -70,17 +75,43 @@ async function filterNotinhas(event) {
     event.preventDefault()
     document.querySelector('#notinhas').innerHTML = ''
     renderLoadingNotinhas(true)
-    
+    PAGE = 0;
+    console.log(PAGE)
     const startDate = getStartDate()
     const endDate = getEndDate()
     const clientId = getClientId(URL)
     
     const where = prepareQuery(clientId, startDate, endDate) 
     const orders = await Order.findAll({
-        limit: pagination.limit,
-        offset: pagination.offset,
-        where, order: [['id', 'ASC']]
+        offset: PAGE * PAGE_SIZE,
+        limit: PAGE * PAGE_SIZE + PAGE_SIZE,
+        where, order: [['id', 'DESC']]
     })
+    let promise = renderOrders(orders)
+    
+    await Promise.all([promise])
+    listenerDetailButtons()
+    listenerUnpaidButtons()
+    renderLoadingNotinhas(false)
+}
+
+
+async function loadMoreNotinhas() {
+    PAGE += 1;
+
+    const startDate = getStartDate()
+    const endDate = getEndDate()
+    const clientId = getClientId(URL)
+    
+    const where = prepareQuery(clientId, startDate, endDate) 
+    const orders = await Order.findAll({
+        offset: PAGE * PAGE_SIZE,
+        limit: PAGE * PAGE_SIZE + PAGE_SIZE,
+        where, order: [['id', 'DESC']]
+    })
+
+    if (orders.length == 0)
+        return
     let promise = renderOrders(orders)
     
     await Promise.all([promise])
@@ -208,8 +239,12 @@ async function createCardContent(order) {
     let clientName = document.createElement('p')
     clientName.classList.add('mt-3')
     let name = 'Cliente não identificado'
-    if (order.clientId)
-        name = await Client.findOne({where: {id: order.clientId}}).name
+    if (order.clientId) {
+        orderClient = await Client.findOne({where: {id: order.clientId}})
+        if (orderClient)
+            name = NameFormater.person(orderClient.dataValues.name);
+    }
+
     clientName.appendChild(document.createTextNode(name))
     cardContent.appendChild(clientName)
 
