@@ -44,18 +44,18 @@ let SHOP_CAR = []
 
 
 function calculatePayback(event) {
-    const input = event.path[0];
+    const input = document.querySelector('#client-money');
     const paybackNode = document.querySelector('#payback');
 
     const value = input.value.toLowerCase();
     const totalText = document.querySelector('#total-end-shop').innerHTML;
-    const totalValue = parseFloat(totalText.replace('R$&nbsp;', ''));
+    const totalValue = parseFloat(totalText.replace('R$&nbsp;', '').replace(',', '.'));
 
     if (isNaN(value) || value === '' || parseFloat(value) <= totalValue) {
         paybackNode.innerHTML = FormatNumber.real(0.0);
         return;
     }
-    console.log((isNaN(value) || parseFloat(value) <= totalValue))
+    
     const payback = (parseFloat(value) - totalValue).toFixed(2);
 
     paybackNode.innerHTML = FormatNumber.real(payback);
@@ -169,9 +169,32 @@ function shopCarTotal() {
 
 
 function discountOnTotal(event) {
-    const discountPercent = document.querySelector('')
+    const discountPercent = document.querySelector('#discount-percent').value
+    const discountMoney = document.querySelector('#discount-money').value
+
     const total = shopCarTotal();
-    const newTotal = total
+    let newTotal;
+
+    if (discountPercent === '' && discountMoney === '') {
+        M.toast({html: 'Desconto inválido', classes: 'red'})
+        return
+    }
+
+
+    if (discountMoney === '')
+        newTotal = total * (1 - (parseInt(discountPercent)) / 100);
+    else if (discountPercent === '')
+        newTotal = total - parseFloat(discountMoney);
+    
+    M.toast({html: `desconto ${total - newTotal} de aplicado!` })
+    
+    const remove = (total - newTotal) / SHOP_CAR.length;
+
+    SHOP_CAR.forEach(product => {
+        product.product.dataValues.price -= remove
+    })
+    document.querySelector('#total-end-shop').innerHTML = FormatNumber.real(shopCarTotal())
+    calculatePayback()
 }
 
 
