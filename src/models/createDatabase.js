@@ -1,7 +1,9 @@
 const { Client, ClientAddress, ClientFone } = require('./Client')
 const { Product, ComboProducts } = require('./Product')
 const { Employee } = require('./Employee')
-const { Sale, Order } = require('./Sale')
+const { Establishment } = require('./Establishment')
+const { OrderProduct, Order } = require('./Order')
+
 
 
 /*
@@ -21,4 +23,5 @@ Order.sync(foce)
 */
 
 const db = require('./Connection')
-db.sync()
+
+db.sync({force: true})

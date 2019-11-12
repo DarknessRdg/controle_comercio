@@ -4,19 +4,22 @@
   "description": "Programa Desktop para controle de venda de produtos de um Comércio",
   "main": "src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "rebuild": "electron-rebuild -f -w sqlite3"
   },
   "author": "Luan Rodrigues",
   "license": "MIT",
   "dependencies": {
     "electron": "^6.0.7",
+    "electron-builder": "^22.1.0",
     "material-design-icons": "^3.0.1",
     "materialize-css": "^1.0.0-rc.2",
-    "pg": "^7.12.1",
-    "pg-hstore": "^2.3.3",
-    "sequelize": "^5.18.1"
+    "sequelize": "^5.18.1",
+    "sqlite3": "^4.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron-rebuild": "^1.8.6"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Experluan/controle_comercio.git"

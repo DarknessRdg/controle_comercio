@@ -1,9 +1,12 @@
 const Sequelize = require('sequelize')
 
-const sequelize = new Sequelize('db_sistema_comercio', 'postgres', 'Newera1.0', {
-  host: 'localhost',
-  dialect: 'postgres'
-})
+const path = require('path')
+
+
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: path.join(__dirname, '/data/db.sqlite3'),
+});
 
 module.exports = sequelize;
 
