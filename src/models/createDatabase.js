@@ -5,7 +5,6 @@ const { Establishment } = require('./Establishment')
 const { OrderProduct, Order } = require('./Order')
 
 
-
 /*
 force = {force: true}
 
@@ -23,5 +22,4 @@ Order.sync(foce)
 */
 
 const db = require('./Connection')
-
-db.sync({force: true})
+db.sync()

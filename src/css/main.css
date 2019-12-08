@@ -7,6 +7,23 @@ body {
     min-height: 100vh;
 }
 
+#page-back {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+}
+
+#page-back i {
+  font-size: 50px;
+}
+
+#page-back i:hover {
+  background: black;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
 /* customize scrollbar */
 ::-webkit-scrollbar-track
 {

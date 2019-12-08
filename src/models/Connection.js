@@ -1,12 +1,10 @@
 const Sequelize = require('sequelize')
+const config = require('../config');
 
-const path = require('path')
-
-
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: path.join(__dirname, '/data/db.sqlite3'),
-});
+const sequelize = new Sequelize(config.DB_NAME, 'postgres', config.PASSWORD, {
+  host: config.HOST,
+  dialect: 'postgres'
+})
 
 module.exports = sequelize;
 
