@@ -461,7 +461,7 @@ async function notinhaProducts(tbody, model) {
         quantity.appendChild(document.createTextNode(orderProduct.dataValues.quantity))        
 
         let priceFormated = FormatNumber.real(orderProduct.dataValues.productPrice)
-        priceFormated = priceFormated.replace('R$', '.')
+        priceFormated = priceFormated.replace('R$', '')
         price.appendChild(document.createTextNode(priceFormated))
 
         sum += orderProduct.dataValues.productPrice * orderProduct.dataValues.quantity
