@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize')
+const config = require('../config');
 
-const sequelize = new Sequelize('db_sistema_comercio', 'postgres', 'Newera1.0', {
-  host: 'localhost',
+const sequelize = new Sequelize(config.DB_NAME, 'postgres', config.PASSWORD, {
+  host: config.HOST,
   dialect: 'postgres'
 })
 
