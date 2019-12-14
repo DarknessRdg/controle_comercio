@@ -12,10 +12,12 @@
   "dependencies": {
     "electron": "^6.0.7",
     "electron-builder": "^22.1.0",
+    "electron-print": "^1.0.2",
     "material-design-icons": "^3.0.1",
     "materialize-css": "^1.0.0-rc.2",
-    "sequelize": "^5.18.1",
-    "sqlite3": "^4.1.0"
+    "pg": "^7.14.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.18.1"
   },
   "devDependencies": {
     "electron-rebuild": "^1.8.6"
