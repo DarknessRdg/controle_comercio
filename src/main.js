@@ -2,9 +2,7 @@ const electron = require('electron')
 const url = require('url')
 const path = require('path')
 
-const {app,  BrowserWindow, Menu} = electron
-
-let DEBUG = true;
+const {app,  BrowserWindow} = electron
 
 let mainWindow;
 
@@ -20,6 +18,16 @@ app.on('ready', function() {
         center: true
     });
 
+    mainWindow.setMenuBarVisibility(false)
+
+    electron.globalShortcut.register('Ctrl+R', () => {
+        mainWindow.reload()
+    })
+
+    electron.globalShortcut.register('Ctrl+I', () => {
+        mainWindow.webContents.openDevTools()
+    })
+
     // load html file into the window
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, '/templates/mainWindow.html'),
@@ -31,40 +39,5 @@ app.on('ready', function() {
         app.quit()  // close all windows when closed
     })
 
-    // build main menu from template
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
-    Menu.setApplicationMenu(mainMenu)  // insert new menu
     mainWindow.maximize()
 })
-
-// create menu template
-const mainMenuTemplate = [
-    {
-        label: 'Produtos',
-        submenu: [
-            {label: "Novo produto"},
-            {label: "Pesquisar produto"}
-        ]
-    }
-]
-
-
-if (DEBUG) {
-    mainMenuTemplate.push({
-        label: 'Dev tools',
-        submenu: [
-            {
-                label: 'Inspecionar',
-                accelerator: 'Ctrl+I',
-                click(item, focusedWindow) {
-                    focusedWindow.toggleDevTools()
-                }
-            },
-            {
-                role: 'reload',
-                accelerator: 'Ctrl+R'
-            }
-        ]
-    })
-}
-
