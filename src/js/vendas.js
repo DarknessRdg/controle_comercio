@@ -399,7 +399,7 @@ async function saveList() {
 
         return Promise.all(promise);
     }).then(result => {
-        M.toast({html: 'Compra salva!', classes: 'rounded green'});
+        M.toast({html: 'Compra salva!', classes: 'rounded green no-print'});
     }).catch(error => {
         M.toast({html: 'Error salvar ao salvar compra!', classes: 'rounded red'});
         console.log(error)
@@ -461,7 +461,7 @@ async function notinhaProducts(tbody, model) {
         quantity.appendChild(document.createTextNode(orderProduct.dataValues.quantity))        
 
         let priceFormated = FormatNumber.real(orderProduct.dataValues.productPrice)
-        priceFormated = priceFormated.replace('R$', '')
+        priceFormated = priceFormated.replace('R$', '.')
         price.appendChild(document.createTextNode(priceFormated))
 
         sum += orderProduct.dataValues.productPrice * orderProduct.dataValues.quantity
