@@ -12,5 +12,16 @@
 
 #notinha {
     display: none;
-    font-size: 0.4em !important;
+}
+
+#notinha * {
+    font-size: 10px !important;
+}
+
+#notinha h6 {
+    font-size: 16px !important;
+}
+
+#notinha h5 {
+    font-size: 14px !important;
 }
