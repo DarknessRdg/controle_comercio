@@ -215,7 +215,7 @@ async function updateProduct() {
     console.log(product)
     await product.update({
             name: nameInput.value,
-            price: priceInput.value,
+            price: priceInput.value.replace(',' , '.'),
             barCode: barCodeInput.value
         })
     
