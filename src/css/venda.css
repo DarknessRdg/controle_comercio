@@ -15,11 +15,19 @@
 }
 
 #notinha * {
-    font-size: 10px !important;
+    font-size: 8px !important;
 }
 
 #notinha h6 {
     font-size: 16px !important;
+}
+
+#notinha h6 * {
+    font-size: 16px !important;
+}
+
+#notinha h6 span {
+    float: right;
 }
 
 #notinha h5 {
