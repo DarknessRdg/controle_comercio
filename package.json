@@ -5,7 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "rebuild": "electron-rebuild -f -w sqlite3"
+    "rebuild": "electron-rebuild -f -w sqlite3",
+    "createdb": "node src/models/createDatabase.js"
   },
   "author": "Luan Rodrigues",
   "license": "MIT",
