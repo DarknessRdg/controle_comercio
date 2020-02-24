@@ -2,16 +2,20 @@
     display: none !important;
 }
 
+#notinha * {
+    font-family: 'Times New Roman' !important;
+}
+
 #notinha {
     color: black;
     all: unset;
 }
 
-#notinha > table > tbody > tr {
+#notinha>table>tbody>tr {
     border-bottom: black dotted 1px !important;
 }
 
-#notinha > table > thead > tr {
+#notinha>table>thead>tr {
     border-bottom: black dotted 1px !important;
 }
 
