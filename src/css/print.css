@@ -21,18 +21,15 @@ body {
 
 table {
     width: 100%;
+    border-collapse: collapse;
 }
 
-#notinha>table.mt>tbody>tr>td {
-    border-bottom: black dashed 1px !important;
-}
-
-#notinha>table.mt>tbody>tr>td * {
-    font-size: 7px !important;
+#products tbody {
+    font-size: 8px !important;
 }
 
 .border-bottom {
-    border-bottom: black dashed 1px;
+    border-bottom: 1px dashed black !important;
 }
 
 .material-tooltip {

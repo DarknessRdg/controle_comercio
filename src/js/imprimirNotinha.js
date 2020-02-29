@@ -56,6 +56,7 @@ async function notinhaProducts(tbody, model) {
     let sum = 0
     const promisse = model.map(async (orderProduct) => {
         let row = tbody.insertRow(-1)
+        row.classList.add('border-bottom')
 
         let name = row.insertCell(0)
         name.setAttribute('align', 'left')
