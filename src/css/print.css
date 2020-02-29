@@ -1,14 +1,22 @@
+body {
+    font-size: 12px;
+}
+
 .no-print {
     display: none !important;
 }
 
 #notinha * {
-    font-family: 'Times New Roman' !important;
+    font-family: 'Times New Roman' sans-serif !important;
 }
 
 #notinha {
     color: black;
-    all: unset;
+    width: 100%;
+}
+
+table {
+    width: 100%;
 }
 
 #notinha>table>tbody>tr {
