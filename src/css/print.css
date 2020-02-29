@@ -24,8 +24,8 @@ table {
     border-collapse: collapse;
 }
 
-#products tbody {
-    font-size: 8px !important;
+#products * {
+    font-size: 7px !important;
 }
 
 .border-bottom {
