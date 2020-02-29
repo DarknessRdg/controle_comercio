@@ -4,7 +4,7 @@ const { Client } = require('../models/Client')
 const FormatNumber = require('../js/utils/formatNumbers')
 const MaterializeListener = require('../js/MaterializeListeners')
 const ConnectionDatabase = require('../models/Connection')
-
+const { redirectTargetBlank } = require('../js/utils/redirect')
 
 MaterializeListener.tooltips()
 MaterializeListener.collapsible()
@@ -55,7 +55,7 @@ function calculatePayback(event) {
         paybackNode.innerHTML = FormatNumber.real(0.0);
         return;
     }
-    
+
     const payback = (parseFloat(value) - totalValue).toFixed(2);
 
     paybackNode.innerHTML = FormatNumber.real(payback);
@@ -88,7 +88,7 @@ async function addProductToTable() {
         renderTableOfProducts()
     }
     else {
-        M.toast({html: 'Produto nao encontrado', classes: 'rounded red no-print'});
+        M.toast({ html: 'Produto nao encontrado', classes: 'rounded red no-print' });
     }
     barCode.value = ''
     quantity.value = '1'
@@ -97,10 +97,10 @@ async function addProductToTable() {
 
 async function getProduct(barCode) {
     try {
-        const product = await Product.findOne({where: {barCode}})
+        const product = await Product.findOne({ where: { barCode } })
         return product
     }
-    catch(error) {
+    catch (error) {
         console.log(error)
         return null;
     }
@@ -110,33 +110,33 @@ async function getProduct(barCode) {
 function addToShopCar(product, quantity) {
     quantity = parseInt(quantity)
     let added = false
-    
+
     for (let i = 0; i < SHOP_CAR.length; i++) {
         let productInside = SHOP_CAR[i]
 
-        if (productInside.product.dataValues.id === product.dataValues.id){
+        if (productInside.product.dataValues.id === product.dataValues.id) {
             productInside.quantity += quantity;
             added = true;
         }
     }
 
     if (!added)
-        SHOP_CAR.push({product, quantity})
-    
-    M.toast({html: `${product.dataValues.name.toUpperCase()} adicionado!`, classes: 'rounded green no-print'});
+        SHOP_CAR.push({ product, quantity })
+
+    M.toast({ html: `${product.dataValues.name.toUpperCase()} adicionado!`, classes: 'rounded green no-print' });
 }
 
 
 function removeFromShopCar(event) {
     const target = event.target
     const pathTr = target.nodeName === 'I' ? 3 : 2
-    
+
     let barCode = event.path[pathTr].getAttribute('bar-code')
 
     SHOP_CAR = SHOP_CAR.filter(product => {
         return product.product.dataValues.barCode !== barCode
     })
-    
+
     renderTableOfProducts()
 }
 
@@ -146,7 +146,7 @@ function decreaseOne(event) {
     const pathTr = target.nodeName === 'I' ? 3 : 2
 
     let barCode = event.path[pathTr].getAttribute('bar-code')
-    
+
     for (let i = 0; i < SHOP_CAR.length; i++) {
         let productInside = SHOP_CAR[i]
 
@@ -162,7 +162,7 @@ function decreaseOne(event) {
 
 function shopCarTotal() {
     let sum = 0;
-    SHOP_CAR.forEach(product => { sum += product.product.dataValues.price * product.quantity});
+    SHOP_CAR.forEach(product => { sum += product.product.dataValues.price * product.quantity });
     return sum;
 }
 
@@ -176,7 +176,7 @@ function discountOnTotal(event) {
     let newTotal;
 
     if (discountPercent === '' && discountMoney === '') {
-        M.toast({html: 'Desconto inválido', classes: 'red'})
+        M.toast({ html: 'Desconto inválido', classes: 'red' })
         return
     }
 
@@ -185,9 +185,9 @@ function discountOnTotal(event) {
         newTotal = total * (1 - (parseInt(discountPercent)) / 100);
     else if (discountPercent === '')
         newTotal = total - parseFloat(discountMoney);
-    
-    M.toast({html: `desconto ${total - newTotal} de aplicado!` })
-    
+
+    M.toast({ html: `desconto ${total - newTotal} de aplicado!` })
+
     const remove = (total - newTotal) / SHOP_CAR.length;
 
     SHOP_CAR.forEach(product => {
@@ -204,7 +204,7 @@ function discountOnTableRow(event) {
     const modal = document.querySelector('.modal')
     let percent = modal.querySelector('#descount-product-percent').value
     let money = modal.querySelector('#descount-product-money').value
-    money = money.replace(',' , '.')
+    money = money.replace(',', '.')
     const barCode = modal.querySelector('#bar-code-for-descount').innerHTML
 
     const isPercent = percent !== ''
@@ -213,8 +213,8 @@ function discountOnTableRow(event) {
         descount = parseInt(percent)
     else
         descount = parseFloat(money)
-    
-    descountProduct(descount, barCode, {percent: isPercent})
+
+    descountProduct(descount, barCode, { percent: isPercent })
     renderTableOfProducts()
 }
 
@@ -229,16 +229,16 @@ function descountProduct(descount, barCode, type) {
     for (let i = 0; i < SHOP_CAR.length; i++) {
         let productInside = SHOP_CAR[i]
         let productBarCode = productInside.product.dataValues.barCode
-        
+
         if (productBarCode === barCode) {
             let price = productInside.product.dataValues.price
             const originalPrice = price
-            
+
             if (type.percent)
                 price = price * descount
             else
                 price -= descount
-            price = price > 0 ? price : 0   
+            price = price > 0 ? price : 0
             price = parseFloat(price.toFixed(2))
             productInside.product.dataValues.price = price
 
@@ -246,7 +246,7 @@ function descountProduct(descount, barCode, type) {
             break
         }
     }
-    M.toast({html: 'Desconto: R$ ' + amountDescount, classes: 'rounded no-print'});
+    M.toast({ html: 'Desconto: R$ ' + amountDescount, classes: 'rounded no-print' });
 }
 
 
@@ -272,10 +272,10 @@ function createTableRow(product, quantity) {
 
     const btnDelete = `<button class="waves-effect waves-light btn red darken-2 delete" type="button">
         <i class="samll material-icons">delete</i></button> `
-    
+
     const btnDecrease = `<button class="waves-effect waves-light btn deep-orange darken-2 decrease" type="button">
             <i class="samll material-icons">exposure_neg_1</i></button> `
-    
+
     const btnDescount = `<button 
         class="waves-effect waves-light btn light-blue darken-4 add-descount tooltipped modal-trigger no-print" 
         type="button" data-position="bottom" data-tooltip="Desconto no produto" 
@@ -285,8 +285,8 @@ function createTableRow(product, quantity) {
     name.appendChild(document.createTextNode(product.dataValues.name.toUpperCase()))
     quantityCell.appendChild(document.createTextNode(quantity))
     btn.innerHTML = btnDelete + btnDecrease + btnDescount
-        
-        
+
+
 
     const priceFormated = FormatNumber.real(product.dataValues.price)
     price.appendChild(document.createTextNode(priceFormated))
@@ -306,7 +306,7 @@ function openModalDescount(event) {
     const pathTr = target.nodeName === 'I' ? 3 : 2
 
     let barCode = event.path[pathTr].getAttribute('bar-code')
-    let product = SHOP_CAR.filter(prod => { return prod.product.dataValues.barCode === barCode})[0]
+    let product = SHOP_CAR.filter(prod => { return prod.product.dataValues.barCode === barCode })[0]
 
     let modal = document.querySelector('.modal')
     modal.querySelector('#bar-code-for-descount').innerHTML = barCode
@@ -347,7 +347,7 @@ function listennerOnDescount() {
 
 async function endShopping() {
     if (SHOP_CAR.length === 0)
-        M.toast({html: 'Lista vazia!', classes: 'rounded red no-print'})
+        M.toast({ html: 'Lista vazia!', classes: 'rounded red no-print' })
     else {
         document.querySelector('#total-end-shop').innerHTML = FormatNumber.real(shopCarTotal());
         openEndShoppingModal()
@@ -365,7 +365,7 @@ function openEndShoppingModal() {
 function modalEditClearFields() {
     const modal = document.querySelector('#modal-end-shop');
     modal.querySelector('#client-cpf').value = '';
-    modal.querySelector('#is-unpaid').checked =  false;
+    modal.querySelector('#is-unpaid').checked = false;
     modal.querySelector('#discount-percent').value = '';
     modal.querySelector('#discount-money').value = '';
     modal.querySelector('#client-money').value = '';
@@ -382,91 +382,32 @@ async function saveList() {
     instance.close();
     modalEditClearFields()
 
-    let clientId = await Client.findOne({where: {cpf}});
+    let clientId = await Client.findOne({ where: { cpf } });
     clientId = clientId !== null ? clientId.dataValues.id : null;
 
-    const order = await Order.create({paid: !unpaid, clientId});
+    const order = await Order.create({ paid: !unpaid, clientId });
     const orderId = order.dataValues.id;
 
     let promise = ConnectionDatabase.transaction(t => {
 
-        let promise = SHOP_CAR.map( (product) => {
+        let promise = SHOP_CAR.map((product) => {
             const productId = product.product.dataValues.id;
             const quantity = product.quantity;
             const productPrice = product.product.dataValues.price;
-            OrderProduct.create({productId, quantity, productPrice, orderId}, {transaction: t})
+            OrderProduct.create({ productId, quantity, productPrice, orderId }, { transaction: t })
         });
 
         return Promise.all(promise);
     }).then(result => {
-        M.toast({html: 'Compra salva!', classes: 'rounded green no-print'});
+        M.toast({ html: 'Compra salva!', classes: 'rounded green no-print' });
     }).catch(error => {
-        M.toast({html: 'Error salvar ao salvar compra!', classes: 'rounded red'});
+        M.toast({ html: 'Error salvar ao salvar compra!', classes: 'rounded red' });
         console.log(error)
     });
 
     await Promise.resolve(promise)
 
-    const listOfProducts = await OrderProduct.findAll(
-        {where: {orderId}
-    })
-
-    await renderNotinha(listOfProducts)
-    window.print()
+    redirectTargetBlank(`printNotinha.html?id=${orderId}`);
     SHOP_CAR = []
     renderTableOfProducts()
-}
-
-
-async function renderNotinha(orderProducts) {
-    const notinha = document.querySelector('#notinha')
-    const date = notinha.querySelector('.date')
-    const idCupom = notinha.querySelector('.id-cupom')
-    const total = notinha.querySelector('.total')
-    
-    let tbody = notinha.querySelector('table>tbody')
-    tbody.innerHTML = ''
-    const totalPrice = await notinhaProducts(tbody, orderProducts)
-    notinhaDate(date)
-    idCupom.innerHTML = orderProducts[0].dataValues.orderId
-    total.innerHTML = totalPrice
-}
-
-
-function notinhaDate(node) {
-    const date = new Date()
-    const strDate = date.toLocaleDateString()
-    const time = date.getHours().toString() + ':' + date.getMinutes().toString()
-    node.innerHTML = strDate + ' ' + time
-}
-
-
-async function notinhaProducts(tbody, model) {
-    let sum = 0
-    const promisse = model.map(async (orderProduct) => {
-        let row = tbody.insertRow(-1)
-        let name = row.insertCell(0)
-        let quantity = row.insertCell(1)
-        let price = row.insertCell(2)
-        price.classList.add('text-right')
-        quantity.classList.add('text-center')
-
-        const product = await Product.findOne({
-            where: {
-                id: orderProduct.dataValues.productId
-            }
-        })
-
-        name.appendChild(document.createTextNode(product.dataValues.name.toUpperCase()))
-        quantity.appendChild(document.createTextNode(orderProduct.dataValues.quantity))        
-
-        let priceFormated = FormatNumber.real(orderProduct.dataValues.productPrice)
-        priceFormated = priceFormated.replace('R$', '.')
-        price.appendChild(document.createTextNode(priceFormated))
-
-        sum += orderProduct.dataValues.productPrice * orderProduct.dataValues.quantity
-    })
-    await Promise.all(promisse)
-
-    return sum;
 }
