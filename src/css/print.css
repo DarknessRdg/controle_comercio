@@ -2,12 +2,16 @@ body {
     font-size: 12px;
 }
 
+.mt {
+    margin-top: 4px;
+}
+
 .no-print {
     display: none !important;
 }
 
 #notinha * {
-    font-family: 'Times New Roman' sans-serif !important;
+    font-family: sans-serif !important;
 }
 
 #notinha {
@@ -19,16 +23,16 @@ table {
     width: 100%;
 }
 
-#notinha>table>tbody>tr {
-    border-bottom: black dotted 1px !important;
+#notinha>table.mt>tbody>tr>td {
+    border-bottom: black dashed 1px !important;
 }
 
-#notinha>table>thead>tr {
-    border-bottom: black dotted 1px !important;
+#notinha>table.mt>tbody>tr>td * {
+    font-size: 7px !important;
 }
 
 .border-bottom {
-    border-bottom: black dotted 1px;
+    border-bottom: black dashed 1px;
 }
 
 .material-tooltip {
