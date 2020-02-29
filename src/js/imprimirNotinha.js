@@ -44,7 +44,10 @@ async function renderNotinha(orderProducts) {
 function notinhaDate(node) {
     const date = new Date()
     const strDate = date.toLocaleDateString()
-    const time = date.getHours().toString() + ':' + date.getMinutes().toString()
+    let minute = date.getMinutes().toString()
+    if (minute.length == 1)
+        minute = '0' + minute
+    const time = date.getHours().toString() + ':' + minute
     node.innerHTML = strDate + ' ' + time
 }
 
@@ -69,7 +72,9 @@ async function notinhaProducts(tbody, model) {
             }
         })
 
-        name.appendChild(document.createTextNode(product.dataValues.name.toUpperCase()))
+        let p = document.createElement('p')
+        p.appendChild(document.createTextNode(product.dataValues.name.toUpperCase()))
+        name.appendChild(p)
         quantity.appendChild(document.createTextNode(orderProduct.dataValues.quantity))
 
         let priceFormated = FormatNumber.real(orderProduct.dataValues.productPrice)
