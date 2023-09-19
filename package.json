@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "createdb": "node src/models/createDatabase.js"
+    "createdb": "node src/models/createDatabase.js",
+    "migrate": "sequelize-cli db:migrate --config ./src/config.js"
   },
   "author": "Luan Rodrigues",
   "license": "MIT",
@@ -14,12 +15,15 @@
     "electron": "^6.0.7",
     "material-design-icons": "^3.0.1",
     "materialize-css": "^1.0.0-rc.2",
-    "pg": "^7.14.0",
-    "pg-hstore": "^2.3.3",
-    "sequelize": "^5.18.1"
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.33.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/DarknessRdg/controle_comercio.git"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.1"
   }
 }

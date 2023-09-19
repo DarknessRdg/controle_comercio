@@ -388,24 +388,20 @@ async function saveList() {
     const order = await Order.create({ paid: !unpaid, clientId });
     const orderId = order.dataValues.id;
 
-    let promise = ConnectionDatabase.transaction(t => {
+    const allProducts = SHOP_CAR.map((product) => {
+        const productId = product.product.dataValues.id;
+        const quantity = product.quantity;
+        const productPrice = product.product.dataValues.price;
+        return { productId, quantity, productPrice, orderId }
+    });
 
-        let promise = SHOP_CAR.map((product) => {
-            const productId = product.product.dataValues.id;
-            const quantity = product.quantity;
-            const productPrice = product.product.dataValues.price;
-            OrderProduct.create({ productId, quantity, productPrice, orderId }, { transaction: t })
-        });
-
-        return Promise.all(promise);
-    }).then(result => {
+    OrderProduct.bulkCreate(allProducts)
+     .then(result => {
         M.toast({ html: 'Compra salva!', classes: 'rounded green no-print' });
     }).catch(error => {
         M.toast({ html: 'Error salvar ao salvar compra!', classes: 'rounded red' });
         console.log(error)
     });
-
-    await Promise.resolve(promise)
 
     redirectTargetBlank(`printNotinha.html?id=${orderId}`);
     SHOP_CAR = []
