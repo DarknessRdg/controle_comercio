@@ -1,0 +1,11 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "dbpassword",
+    "database": "controle_comercio",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres",
+    "migrationStorageTableName": "migrations"
+  }
+}
