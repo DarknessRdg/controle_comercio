@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "createdb": "node src/models/createDatabase.js"
+    "createdb": "node src/models/createDatabase.js",
+    "migrate": "sequelize-cli db:migrate --config ./src/config.js"
   },
   "author": "Luan Rodrigues",
   "license": "MIT",
